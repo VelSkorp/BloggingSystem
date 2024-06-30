@@ -1,0 +1,34 @@
+﻿@{
+	ViewData["Title"] = "Register";
+}
+
+<div class="form-container">
+	<form method="post" asp-action="Register" asp-controller="Auth">
+		<div class="text">Register</div>
+		<div class="form-group">
+			<label for="Username">Username</label>
+			<input type="text" id="Username" name="Username" class="form-control" />
+		</div>
+		<div class="form-group">
+			<label for="FirstName">First Name</label>
+			<input type="text" id="FirstName" name="FirstName" class="form-control" />
+		</div>
+		<div class="form-group">
+			<label for="LastName">Last Name</label>
+			<input type="text" id="LastName" name="LastName" class="form-control" />
+		</div>
+		<div class="form-group">
+			<label for="Password">Password</label>
+			<input type="password" id="Password" name="Password" class="form-control" />
+		</div>
+		@if (ViewBag.ErrorMessage != null)
+		{
+			<div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+		}
+		<button type="submit" class="btn btn-warning">Register</button>
+		<div class="singup">
+			Already have an account?
+			<a href="@Url.Action("Login", "Auth")">Login</a>
+		</div>
+	</form>
+</div>

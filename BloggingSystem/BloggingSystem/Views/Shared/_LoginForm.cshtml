@@ -1,0 +1,24 @@
+﻿@model BloggingSystem.LoginCredentials
+
+<div>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Username)
+		</dt>
+		<dd>
+			@Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Password)
+		</dt>
+		<dd>
+			<input type="text" class="form-control" name="Password" value="@Model.Password" />
+		</dd>
+	</dl>
+</div>
+
+<p>
+	<button type="submit" class="btn btn-warning">Login</button>
+	@Html.ActionLink("Register", "Register", "Auth", new { @class = "btn btn-default" })
+</p>

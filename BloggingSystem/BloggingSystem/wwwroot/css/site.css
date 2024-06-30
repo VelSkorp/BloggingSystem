@@ -1,0 +1,48 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+	font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.container .text {
+	font-size: 35px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.form-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 80vh;
+}
+
+form {
+	width: 30%;
+}
+
+form .data label {
+	font-size: 18px;
+}
+
+form .btn {
+	width: 100%;
+	margin: 5px 0px 0px 0px;
+}

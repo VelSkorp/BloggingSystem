@@ -1,0 +1,22 @@
+﻿@{
+	ViewData["Title"] = "Login";
+}
+
+<div class="form-container">
+	<form method="post" asp-action="Login" asp-controller="Auth">
+		<div class="text">Login</div>
+		<div class="data">
+			<label for="Username">Username</label>
+			<input type="text" id="Username" name="Username" class="form-control" />
+		</div>
+		<div class="data">
+			<label for="Password">Password</label>
+			<input type="password" id="Password" name="Password" class="form-control" />
+		</div>
+		<button type="submit" class="btn btn-warning">Login</button>
+		<div>
+			Don't have an account?
+			<a href="@Url.Action("Register", "Auth")">Singup</a>
+		</div>
+	</form>
+</div>
