@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using BloggingSystemRepository;
 
 namespace BloggingSystem
 {
 	public class AuthController : Controller
 	{
-		private readonly UserService _userService;
+		private readonly IUserRepository _userRepository;
 		private readonly ILogger<AuthController> _logger;
 
-		public AuthController(UserService userService, ILogger<AuthController> logger)
+		public AuthController(IUserRepository userRepository, ILogger<AuthController> logger)
 		{
-			_userService = userService;
+			_userRepository = userRepository;
 			_logger = logger;
 		}
 
@@ -28,16 +29,16 @@ namespace BloggingSystem
 		}
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LoginAsync(LoginCredentials credentials, string returnUrl = null)
 		{
 			try
 			{
-				var user = await _userService.AuthenticateUserAsync(credentials);
+				var user = await _userRepository.AuthenticateUserAsync(credentials);
 
 				var claims = new List<Claim>
 				{
 					new Claim(ClaimTypes.Name, user.Username),
-					// Добавьте другие утверждения, если необходимо
 				};
 
 				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -66,7 +67,7 @@ namespace BloggingSystem
 		{
 			try
 			{
-				var user = await _userService.RegisterUserAsync(credentials);
+				var user = await _userRepository.RegisterUserAsync(credentials);
 				return RedirectToAction("Login", "Auth");
 			}
 			catch (Exception ex)
@@ -76,7 +77,7 @@ namespace BloggingSystem
 			}
 		}
 
-		[HttpPost("logout")]
+		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LogoutAsync()
 		{

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using BloggingSystemRepository;
 
 namespace BloggingSystem
 {
@@ -16,11 +16,11 @@ namespace BloggingSystem
 			services.AddRazorPages();
 			services.AddControllersWithViews();
 
-			services.Configure<BlogStoreDatabaseSettings>(Configuration.GetSection("BlogStoreDatabase"));
+			services.AddMongoDatabase(Configuration);
 
 			// Register services
-			services.AddSingleton<PostsService>();
-			services.AddSingleton<UserService>();
+			services.AddSingleton<IPostsRepository, PostsRepository>();
+			services.AddSingleton<IUserRepository, UserRepository>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

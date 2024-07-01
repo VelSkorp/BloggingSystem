@@ -1,4 +1,4 @@
-﻿namespace BloggingSystem
+﻿namespace BloggingSystemRepository
 {
 	public class LoginCredentials
 	{

@@ -3,18 +3,26 @@ using MongoDB.Driver;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BloggingSystem
+namespace BloggingSystemRepository
 {
-	public class UserService
+	public class UserRepository : IUserRepository
 	{
 		private readonly IMongoCollection<User> _usersCollection;
 
-		public UserService(IOptions<BlogStoreDatabaseSettings> blogStoreDatabaseSettings)
+		public UserRepository(IMongoDatabase mongoDatabase, IOptions<BlogStoreDatabaseSettings> settings)
 		{
-			var mongoClient = new MongoClient(blogStoreDatabaseSettings.Value.ConnectionString);
-			var mongoDatabase = mongoClient.GetDatabase(blogStoreDatabaseSettings.Value.DatabaseName);
+			_usersCollection = mongoDatabase.GetCollection<User>(settings.Value.UsersCollectionName);
+		}
 
-			_usersCollection = mongoDatabase.GetCollection<User>(blogStoreDatabaseSettings.Value.UsersCollectionName);
+		public async Task<User> AuthenticateUserAsync(LoginCredentials credentials)
+		{
+			var user = await _usersCollection.Find(u => u.Username == credentials.Username).FirstOrDefaultAsync();
+			if (user is null || user.Password != HashPassword(credentials.Password))
+			{
+				throw new Exception("Invalid username or password");
+			}
+
+			return user;
 		}
 
 		public async Task<User> RegisterUserAsync(RegisterCredentials credentials)
@@ -35,17 +43,6 @@ namespace BloggingSystem
 			};
 
 			await _usersCollection.InsertOneAsync(user);
-			return user;
-		}
-
-		public async Task<User> AuthenticateUserAsync(LoginCredentials credentials)
-		{
-			var user = await _usersCollection.Find(u => u.Username == credentials.Username).FirstOrDefaultAsync();
-			if (user is null || user.Password != HashPassword(credentials.Password))
-			{
-				throw new Exception("Invalid username or password");
-			}
-
 			return user;
 		}
 

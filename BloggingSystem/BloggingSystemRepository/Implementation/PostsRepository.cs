@@ -1,18 +1,15 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace BloggingSystem
+namespace BloggingSystemRepository
 {
-	public class PostsService
+	public class PostsRepository : IPostsRepository
 	{
 		private readonly IMongoCollection<Post> _postsCollection;
 
-		public PostsService(IOptions<BlogStoreDatabaseSettings> blogStoreDatabaseSettings)
+		public PostsRepository(IMongoDatabase mongoDatabase, IOptions<BlogStoreDatabaseSettings> settings)
 		{
-			var mongoClient = new MongoClient(blogStoreDatabaseSettings.Value.ConnectionString);
-			var mongoDatabase = mongoClient.GetDatabase(blogStoreDatabaseSettings.Value.DatabaseName);
-
-			_postsCollection = mongoDatabase.GetCollection<Post>(blogStoreDatabaseSettings.Value.PostsCollectionName);
+			_postsCollection = mongoDatabase.GetCollection<Post>(settings.Value.PostsCollectionName);
 		}
 
 		public async Task<List<Post>> GetPostsAsync()

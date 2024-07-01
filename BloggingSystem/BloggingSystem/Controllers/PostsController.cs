@@ -1,19 +1,18 @@
+using BloggingSystemRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BloggingSystem
 {
-	[ApiController]
-	[Route("api/[controller]")]
 	public class PostsController : Controller
 	{
 		private readonly ILogger<PostsController> _logger;
-		private readonly PostsService _postsService;
+		private readonly IPostsRepository _postsRepository;
 
-		public PostsController(ILogger<PostsController> logger, PostsService postsService)
+		public PostsController(ILogger<PostsController> logger, IPostsRepository postsRepository)
 		{
 			_logger = logger;
-			_postsService = postsService;   
+			_postsRepository = postsRepository;   
 		}
 
 		public IActionResult Index()
