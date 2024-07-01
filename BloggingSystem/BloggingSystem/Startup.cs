@@ -1,4 +1,5 @@
 ﻿using BloggingSystemRepository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BloggingSystem
 {
@@ -21,6 +22,14 @@ namespace BloggingSystem
 			// Register services
 			services.AddSingleton<IPostsRepository, PostsRepository>();
 			services.AddSingleton<IUserRepository, UserRepository>();
+
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
+				{
+					options.ExpireTimeSpan = TimeSpan.FromHours(10);
+					options.LoginPath = "/Auth/Login";
+					options.AccessDeniedPath = "/Auth/AccessDenied";
+				});
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -31,7 +40,7 @@ namespace BloggingSystem
 			}
 			else
 			{
-				app.UseExceptionHandler("/Error");
+				app.UseExceptionHandler("/Posts/Error");
 				app.UseHsts();
 			}
 
@@ -39,7 +48,7 @@ namespace BloggingSystem
 			app.UseStaticFiles();
 
 			app.UseRouting();
-
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Security.Cryptography;
 using System.Text;
@@ -35,7 +36,7 @@ namespace BloggingSystemRepository
 
 			var user = new User
 			{
-				Id = Guid.NewGuid().ToString(),
+				Id = ObjectId.GenerateNewId(DateTime.Now),
 				Username = credentials.Username,
 				FirstName = credentials.FirstName,
 				LastName = credentials.LastName,
