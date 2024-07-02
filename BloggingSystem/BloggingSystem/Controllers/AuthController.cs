@@ -17,9 +17,12 @@ namespace BloggingSystem
 			_logger = logger;
 		}
 
-		public IActionResult Login(string returnUrl = null)
+		public IActionResult Login()
 		{
-			ViewData["ReturnUrl"] = returnUrl;
+			if (User.Identity.IsAuthenticated)
+			{
+				return RedirectToAction("Index", "Posts");
+			}
 			return View();
 		}
 
@@ -77,8 +80,6 @@ namespace BloggingSystem
 			}
 		}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> LogoutAsync()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

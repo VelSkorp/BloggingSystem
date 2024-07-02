@@ -11,6 +11,13 @@ services:
     ports:
       - 8080:8080
       - 8081:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=development
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
 
   mongodb:
     image: mongo:latest
@@ -55,8 +62,32 @@ services:
     ports:
       - 5044:5044
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redisdata:/data
+
+  ceph:
+    image: ceph/daemon:latest
+    container_name: ceph
+    environment:
+      MON_IP: "127.0.0.1"
+      CEPH_PUBLIC_NETWORK: "0.0.0.0/0"
+    volumes:
+      - cephdata:/var/lib/ceph
+    ports:
+      - 6789:6789
+      - 6800-6803:6800-6803
+
 volumes:
   mongodata:
     driver: local
   esdata:
+    driver: local
+  redisdata:
+    driver: local
+  cephdata:
     driver: local

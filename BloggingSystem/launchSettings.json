@@ -3,8 +3,33 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "bloggingsystem",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
-        "bloggingsystem": "StartDebugging"
+        "bloggingsystem": "StartDebugging",
+        "ceph": "StartWithoutDebugging",
+        "elasticsearch": "StartWithoutDebugging",
+        "kibana": "StartWithoutDebugging",
+        "logstash": "StartWithoutDebugging",
+        "mongodb": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging"
+      }
+    },
+    "Development": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "bloggingsystem",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
+      "serviceActions": {
+        "bloggingsystem": "StartDebugging",
+        "ceph": "DoNotStart",
+        "elasticsearch": "DoNotStart",
+        "kibana": "DoNotStart",
+        "logstash": "DoNotStart",
+        "mongodb": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging"
       }
     }
   }

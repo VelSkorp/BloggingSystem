@@ -42,7 +42,14 @@ form .data label {
 	font-size: 18px;
 }
 
+form .vertical-input {
+	margin: 0px 0px 10px 0px;
+}
+
+form .horizontal-input {
+	margin: 0px 10px 0px 0px;
+}
+
 form .btn {
 	width: 100%;
-	margin: 5px 0px 0px 0px;
 }

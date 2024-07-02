@@ -1,5 +1,7 @@
 ﻿using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+using StackExchange.Redis;
 
 namespace BloggingSystem
 {
@@ -30,6 +32,22 @@ namespace BloggingSystem
 					options.LoginPath = "/Auth/Login";
 					options.AccessDeniedPath = "/Auth/AccessDenied";
 				});
+
+			// Configure data protection to use Redis
+			services.AddStackExchangeRedisCache(options =>
+			{
+				options.Configuration = Configuration.GetConnectionString("RedisConnection");
+			});
+
+			services.AddDataProtection()
+				.PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection")), "DataProtection-Keys")
+				.SetApplicationName("BloggingSystem");
+
+			services.AddAntiforgery(options =>
+			{
+				options.Cookie.Name = "X-CSRF-TOKEN";
+				options.HeaderName = "X-CSRF-TOKEN-HEADER";
+			});
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -60,6 +78,7 @@ namespace BloggingSystem
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Auth}/{action=Login}/{id?}");
+				//pattern: "{controller=Posts}/{action=Index}/{id?}");
 			});
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace BloggingSystemRepository
@@ -14,10 +15,10 @@ namespace BloggingSystemRepository
 
 		public async Task<List<Post>> GetPostsAsync()
 		{ 
-			return await _postsCollection.Find(_ => true).ToListAsync(); 
+			return await _postsCollection.Find(_ => true).ToListAsync();
 		}
 
-		public async Task<Post?> GetPostByIdAsync(int id)
+		public async Task<Post?> GetPostByIdAsync(ObjectId id)
 		{
 			return await _postsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 		}
@@ -37,14 +38,14 @@ namespace BloggingSystemRepository
 			await _postsCollection.InsertOneAsync(newPost);
 		}
 
-		public async Task UpdateAsync(int id, Post updatedPost)
+		public async Task UpdateAsync(Post updatedPost)
 		{
-			await _postsCollection.ReplaceOneAsync(x => x.Id == id, updatedPost);
+			await _postsCollection.ReplaceOneAsync(x => x.Id == updatedPost.Id, updatedPost);
 		}
 
-		public async Task RemoveAsync(int id)
+		public async Task RemoveAsync(Post post)
 		{
-			await _postsCollection.DeleteOneAsync(x => x.Id == id);
+			await _postsCollection.DeleteOneAsync(x => x.Id == post.Id);
 		}
 	}
 }
