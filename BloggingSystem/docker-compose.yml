@@ -5,12 +5,6 @@ services:
       context: .
       dockerfile: BloggingSystem/Dockerfile
     container_name: bloggingsystem
-    depends_on:
-      - mongodb
-      - elasticsearch
-    ports:
-      - 8080:8080
-      - 8081:8081
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
@@ -18,20 +12,30 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
+    ports:
+      - 8080:8080
+      - 8081:8081
+    depends_on:
+      - mongodb
+      - redis
+      - elasticsearch
+      - ceph-mon
+      - ceph-mgr
+      - ceph-osd    
 
   mongodb:
     image: mongo:latest
     container_name: mongodb
-    ports:
-      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: BlogStore
     volumes:
       - mongodata:/data/db
       - ./Docker/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    environment:
-      MONGO_INITDB_DATABASE: BlogStore
+    ports:
+      - 27017:27017
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:latest
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
@@ -42,7 +46,7 @@ services:
       - 9200:9200
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.0
+    image: docker.elastic.co/kibana/kibana:latest
     container_name: kibana
     ports:
       - 5601:5601
@@ -56,31 +60,59 @@ services:
     container_name: logstash
     volumes:
       - ./Docker/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 5044:5044
     depends_on:
       - mongodb
       - elasticsearch
-    ports:
-      - 5044:5044
 
   redis:
     image: redis:latest
     container_name: redis
-    ports:
-      - 6379:6379
     volumes:
       - redisdata:/data
+    ports:
+      - 6379:6379
 
-  ceph:
+  ceph-mon:
     image: ceph/daemon:latest
-    container_name: ceph
+    container_name: ceph-mon
+    command: ["mon"]
     environment:
-      MON_IP: "127.0.0.1"
-      CEPH_PUBLIC_NETWORK: "0.0.0.0/0"
+      - MON_IP=127.0.0.1
+      - CEPH_PUBLIC_NETWORK=0.0.0.0/0
     volumes:
+      - cephdata:/etc/ceph
       - cephdata:/var/lib/ceph
     ports:
-      - 6789:6789
-      - 6800-6803:6800-6803
+      - "6789:6789"
+
+  ceph-mgr:
+    image: ceph/daemon:latest
+    container_name: ceph-mgr
+    environment:
+      - CEPH_DAEMON=mgr
+      - MGR_MODULE_ENABLE=dashboard
+    volumes:
+      - cephdata:/etc/ceph
+      - cephdata:/var/lib/ceph
+    ports:
+      - "7000:7000" 
+    depends_on:
+      - ceph-mon
+
+  ceph-osd:
+    image: ceph/daemon:latest
+    container_name: ceph-osd
+    environment:
+      - OSD_TYPE=disk
+      - OSD_DEVICE=/var/lib/ceph/osd
+      - CEPH_DAEMON=osd
+    volumes:
+      - cephdata:/etc/ceph
+      - cephdata:/var/lib/ceph/osd
+    depends_on:
+      - ceph-mon
 
 volumes:
   mongodata:
