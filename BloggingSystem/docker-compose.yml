@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: BloggingSystem/Dockerfile
+    restart: always
     container_name: bloggingsystem
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -21,10 +22,13 @@ services:
       - elasticsearch
       - ceph-mon
       - ceph-mgr
-      - ceph-osd    
+      - ceph-osd
+    networks:
+      - bloggingsystem-net
 
   mongodb:
     image: mongo:latest
+    restart: always
     container_name: mongodb
     environment:
       MONGO_INITDB_DATABASE: BlogStore
@@ -33,9 +37,12 @@ services:
       - ./Docker/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
       - 27017:27017
+    networks:
+      - bloggingsystem-net
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:latest
+    restart: always
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
@@ -44,19 +51,25 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    networks:
+      - bloggingsystem-net
 
   kibana:
     image: docker.elastic.co/kibana/kibana:latest
+    restart: always
     container_name: kibana
     ports:
       - 5601:5601
     depends_on:
       - elasticsearch
+    networks:
+      - bloggingsystem-net
 
   logstash:
     build:
       context: .
       dockerfile: Docker/logstash/Dockerfile
+    restart: always
     container_name: logstash
     volumes:
       - ./Docker/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
@@ -65,54 +78,71 @@ services:
     depends_on:
       - mongodb
       - elasticsearch
+    networks:
+      - bloggingsystem-net
 
   redis:
     image: redis:latest
+    restart: always
     container_name: redis
     volumes:
       - redisdata:/data
     ports:
       - 6379:6379
+    networks:
+      - bloggingsystem-net
 
   ceph-mon:
-    image: ceph/daemon:latest
+    image: ceph/daemon:latest-mimic
+    restart: always
     container_name: ceph-mon
-    command: ["mon"]
+    command: mon
     environment:
-      - MON_IP=127.0.0.1
-      - CEPH_PUBLIC_NETWORK=0.0.0.0/0
+      - MON_IP=192.168.55.2
+      - CEPH_PUBLIC_NETWORK=192.168.55.0/24
     volumes:
       - cephdata:/etc/ceph
-      - cephdata:/var/lib/ceph
+      - cephdata:/var/lib/ceph/
     ports:
-      - "6789:6789"
+      - 6789:6789
+    networks:
+      bloggingsystem-net:
+        ipv4_address: "192.168.55.2"
 
   ceph-mgr:
-    image: ceph/daemon:latest
+    image: ceph/daemon:latest-mimic
+    restart: always
     container_name: ceph-mgr
+    command: mgr
     environment:
-      - CEPH_DAEMON=mgr
       - MGR_MODULE_ENABLE=dashboard
     volumes:
       - cephdata:/etc/ceph
-      - cephdata:/var/lib/ceph
-    ports:
-      - "7000:7000" 
+      - cephdata:/var/lib/ceph/
     depends_on:
       - ceph-mon
+    ports:
+      - 7000:7000
+    networks:
+      - bloggingsystem-net
 
   ceph-osd:
-    image: ceph/daemon:latest
+    pid: host
+    privileged: true
     container_name: ceph-osd
+    image: ceph/daemon:v3.1.0-stable-3.1-mimic-centos-7
+    command: osd_directory
+    restart: always
     environment:
-      - OSD_TYPE=disk
-      - OSD_DEVICE=/var/lib/ceph/osd
-      - CEPH_DAEMON=osd
+      LANG: en_US.utf8
+      TZ: UTC
     volumes:
       - cephdata:/etc/ceph
-      - cephdata:/var/lib/ceph/osd
+      - cephdata:/var/lib/ceph/
     depends_on:
       - ceph-mon
+    networks:
+      - bloggingsystem-net
 
 volumes:
   mongodata:
@@ -123,3 +153,10 @@ volumes:
     driver: local
   cephdata:
     driver: local
+
+networks:
+  bloggingsystem-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.55.0/24

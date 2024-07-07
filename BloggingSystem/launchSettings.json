@@ -8,12 +8,14 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
         "bloggingsystem": "StartDebugging",
-        "ceph": "StartWithoutDebugging",
+        "ceph-mgr": "StartWithoutDebugging",
         "elasticsearch": "StartWithoutDebugging",
         "kibana": "StartWithoutDebugging",
         "logstash": "StartWithoutDebugging",
         "mongodb": "StartWithoutDebugging",
-        "redis": "StartWithoutDebugging"
+        "redis": "StartWithoutDebugging",
+        "ceph-mon": "StartWithoutDebugging",
+        "ceph-osd": "StartWithoutDebugging"
       }
     },
     "Development": {
@@ -24,12 +26,14 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
         "bloggingsystem": "StartDebugging",
-        "ceph": "DoNotStart",
+        "ceph-mgr": "StartWithoutDebugging",
         "elasticsearch": "DoNotStart",
         "kibana": "DoNotStart",
         "logstash": "DoNotStart",
         "mongodb": "StartWithoutDebugging",
-        "redis": "StartWithoutDebugging"
+        "redis": "StartWithoutDebugging",
+        "ceph-mon": "StartWithoutDebugging",
+        "ceph-osd": "StartWithoutDebugging"
       }
     }
   }

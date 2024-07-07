@@ -12,6 +12,10 @@
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="Docker\ceph-config\ceph.client.admin.keyring" />
+    <None Include="Docker\ceph-config\ceph.conf" />
+    <None Include="Docker\ceph-config\ceph.mon.keyring" />
+    <None Include="Docker\ceph-config\rbdmap" />
     <None Include="Docker\logstash\Dockerfile" />
     <None Include="Docker\logstash\logstash.conf" />
     <None Include="Docker\mongodb\init-mongo.js" />
