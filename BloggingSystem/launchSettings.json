@@ -15,7 +15,8 @@
         "mongodb": "StartWithoutDebugging",
         "redis": "StartWithoutDebugging",
         "ceph-mon": "StartWithoutDebugging",
-        "ceph-osd": "StartWithoutDebugging"
+        "ceph-osd": "StartWithoutDebugging",
+        "ceph-rgw": "StartWithoutDebugging"
       }
     },
     "Development": {
@@ -26,14 +27,15 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "serviceActions": {
         "bloggingsystem": "StartDebugging",
-        "ceph-mgr": "StartWithoutDebugging",
+        "ceph-mgr": "DoNotStart",
         "elasticsearch": "DoNotStart",
         "kibana": "DoNotStart",
         "logstash": "DoNotStart",
         "mongodb": "StartWithoutDebugging",
         "redis": "StartWithoutDebugging",
-        "ceph-mon": "StartWithoutDebugging",
-        "ceph-osd": "StartWithoutDebugging"
+        "ceph-mon": "DoNotStart",
+        "ceph-osd": "DoNotStart",
+        "ceph-rgw": "DoNotStart"
       }
     }
   }

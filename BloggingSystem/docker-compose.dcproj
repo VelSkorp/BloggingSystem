@@ -10,14 +10,17 @@
     <DockerServiceName>bloggingsystem</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Docker\ceph-config\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="Docker\ceph-config\ceph.client.admin.keyring" />
-    <None Include="Docker\ceph-config\ceph.conf" />
-    <None Include="Docker\ceph-config\ceph.mon.keyring" />
-    <None Include="Docker\ceph-config\rbdmap" />
+    <None Include="Docker\ceph\configure.sh" />
+    <None Include="Docker\ceph\dashboard.sh" />
     <None Include="Docker\logstash\Dockerfile" />
     <None Include="Docker\logstash\logstash.conf" />
     <None Include="Docker\mongodb\init-mongo.js" />
+    <None Include="RunDockerCompose.sh" />
+    <None Include="StopDockerCompose.sh" />
   </ItemGroup>
 </Project>

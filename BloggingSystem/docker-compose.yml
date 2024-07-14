@@ -8,13 +8,16 @@ services:
     container_name: bloggingsystem
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_URLS=https://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=development
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/bloggingsystem.pfx
+      - Ceph__Endpoint=https://ceph-rgw:7481
+      - Ceph__AccessKey=${ACCESS_KEY}
+      - Ceph__SecretKey=${SECRET_KEY}
+      - Ceph__BucketName=BlogImages
     volumes:
-      - ~/.aspnet/https:/https:ro
+      - ./Docker/certs:/https:ro
     ports:
-      - 8080:8080
       - 8081:8081
     depends_on:
       - mongodb
@@ -23,8 +26,6 @@ services:
       - ceph-mon
       - ceph-mgr
       - ceph-osd
-    networks:
-      - bloggingsystem-net
 
   mongodb:
     image: mongo:latest
@@ -37,11 +38,9 @@ services:
       - ./Docker/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
       - 27017:27017
-    networks:
-      - bloggingsystem-net
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:latest
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     restart: always
     container_name: elasticsearch
     environment:
@@ -51,19 +50,15 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-    networks:
-      - bloggingsystem-net
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:latest
+    image: docker.elastic.co/kibana/kibana:7.17.0
     restart: always
     container_name: kibana
     ports:
       - 5601:5601
     depends_on:
       - elasticsearch
-    networks:
-      - bloggingsystem-net
 
   logstash:
     build:
@@ -78,8 +73,6 @@ services:
     depends_on:
       - mongodb
       - elasticsearch
-    networks:
-      - bloggingsystem-net
 
   redis:
     image: redis:latest
@@ -89,8 +82,6 @@ services:
       - redisdata:/data
     ports:
       - 6379:6379
-    networks:
-      - bloggingsystem-net
 
   ceph-mon:
     image: ceph/daemon:latest-mimic
@@ -106,8 +97,9 @@ services:
     ports:
       - 6789:6789
     networks:
-      bloggingsystem-net:
+      ceph-net:
         ipv4_address: "192.168.55.2"
+      default:
 
   ceph-mgr:
     image: ceph/daemon:latest-mimic
@@ -119,30 +111,53 @@ services:
     volumes:
       - cephdata:/etc/ceph
       - cephdata:/var/lib/ceph/
+    ports:
+      - 8443:8443
     depends_on:
       - ceph-mon
-    ports:
-      - 7000:7000
     networks:
-      - bloggingsystem-net
+      ceph-net:
+        ipv4_address: "192.168.55.3"
+      default:
 
   ceph-osd:
+    image: ceph/daemon:latest-mimic
+    restart: always
+    container_name: ceph-osd
+    command: osd
     pid: host
     privileged: true
-    container_name: ceph-osd
-    image: ceph/daemon:v3.1.0-stable-3.1-mimic-centos-7
-    command: osd_directory
-    restart: always
     environment:
-      LANG: en_US.utf8
-      TZ: UTC
+      - OSD_TYPE=directory
+      - OSD_DIRECTORY=/var/lib/ceph/osd/ceph-0
+      - OSD_BLUESTORE=1
     volumes:
       - cephdata:/etc/ceph
       - cephdata:/var/lib/ceph/
     depends_on:
       - ceph-mon
     networks:
-      - bloggingsystem-net
+      ceph-net:
+        ipv4_address: "192.168.55.4"
+      default:
+
+  ceph-rgw:
+    image: ceph/daemon:latest-mimic
+    restart: always
+    container_name: ceph-rgw
+    command: rgw
+    volumes:
+      - cephdata:/etc/ceph
+      - cephdata:/var/lib/ceph/
+      - ./Docker/certs:/certs:ro
+    ports:
+      - 7481:7481
+    depends_on:
+      - ceph-osd
+    networks:
+      ceph-net:
+        ipv4_address: "192.168.55.5"
+      default:
 
 volumes:
   mongodata:
@@ -155,7 +170,7 @@ volumes:
     driver: local
 
 networks:
-  bloggingsystem-net:
+  ceph-net:
     ipam:
       driver: default
       config:
