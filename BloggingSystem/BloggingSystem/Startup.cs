@@ -1,6 +1,7 @@
 ﻿using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
 namespace BloggingSystem
@@ -18,12 +19,22 @@ namespace BloggingSystem
 		{
 			services.AddRazorPages();
 			services.AddControllersWithViews();
+			services.AddHttpContextAccessor();
 
+			// Ceph S3 Configuration
+			services.Configure<CephSettings>(Configuration.GetSection("Ceph"));
+
+			// Register database services
 			services.AddMongoDatabase(Configuration);
-
-			// Register services
 			services.AddSingleton<IPostsRepository, PostsRepository>();
 			services.AddSingleton<IUserRepository, UserRepository>();
+			services.AddSingleton<IImageRepository, ImageRepository>(serviceProvider =>
+			{
+				var cephSettings = serviceProvider.GetRequiredService<IOptions<CephSettings>>().Value;
+				var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+				var useHttps = httpContextAccessor.HttpContext.Request.IsHttps;
+				return new ImageRepository(serviceProvider.GetRequiredService<IOptions<CephSettings>>(), useHttps);
+			});
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
@@ -78,7 +89,6 @@ namespace BloggingSystem
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Auth}/{action=Login}/{id?}");
-				//pattern: "{controller=Posts}/{action=Index}/{id?}");
 			});
 		}
 	}

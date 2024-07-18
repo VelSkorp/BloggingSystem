@@ -17,6 +17,10 @@
     <None Include=".dockerignore" />
     <None Include="Docker\ceph\configure.sh" />
     <None Include="Docker\ceph\dashboard.sh" />
+    <None Include="Docker\certs\bloggingsystem.crt" />
+    <None Include="Docker\certs\bloggingsystem.key" />
+    <None Include="Docker\certs\bloggingsystem.pem" />
+    <None Include="Docker\certs\bloggingsystem.pfx" />
     <None Include="Docker\logstash\Dockerfile" />
     <None Include="Docker\logstash\logstash.conf" />
     <None Include="Docker\mongodb\init-mongo.js" />

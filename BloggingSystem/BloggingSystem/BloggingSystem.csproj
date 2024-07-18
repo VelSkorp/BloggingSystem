@@ -10,12 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\images\send-icon.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="wwwroot\images\send-icon.ico" />
-    <None Remove="wwwroot\images\send-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,15 +26,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="wwwroot\images\send-icon.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="Views\Posts\Create.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\images\favicon.ico">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\search-icon.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\send-icon.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

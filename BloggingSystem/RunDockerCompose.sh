@@ -11,7 +11,7 @@ docker-compose up -d ceph-osd ceph-rgw
 # Exporting keys from dashboard.sh
 source ./Docker/ceph/dashboard.sh
 
-docker-compose up -d
+docker-compose up -d --build
 
 set +x
 

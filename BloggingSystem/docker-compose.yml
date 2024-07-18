@@ -11,13 +11,16 @@ services:
       - ASPNETCORE_URLS=https://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=development
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/bloggingsystem.pfx
-      - Ceph__Endpoint=https://ceph-rgw:7481
+      - Ceph__Endpoint=ceph-rgw
+      - Ceph__EndpointPort=7480
+      - Ceph__EndpointHttpsPort=7481
       - Ceph__AccessKey=${ACCESS_KEY}
       - Ceph__SecretKey=${SECRET_KEY}
       - Ceph__BucketName=BlogImages
     volumes:
       - ./Docker/certs:/https:ro
     ports:
+      - 8080:8080
       - 8081:8081
     depends_on:
       - mongodb
@@ -142,7 +145,7 @@ services:
       default:
 
   ceph-rgw:
-    image: ceph/daemon:latest-mimic
+    image: quay.io/ceph/daemon
     restart: always
     container_name: ceph-rgw
     command: rgw
@@ -151,6 +154,7 @@ services:
       - cephdata:/var/lib/ceph/
       - ./Docker/certs:/certs:ro
     ports:
+      - 7480:7480
       - 7481:7481
     depends_on:
       - ceph-osd

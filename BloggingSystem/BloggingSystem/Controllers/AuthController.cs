@@ -33,7 +33,7 @@ namespace BloggingSystem
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> LoginAsync(LoginCredentials credentials, string returnUrl = null)
+		public async Task<IActionResult> LoginAsync(LoginCredentials credentials)
 		{
 			try
 			{
@@ -48,11 +48,6 @@ namespace BloggingSystem
 
 				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
 					new ClaimsPrincipal(claimsIdentity));
-
-				if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-				{
-					return Redirect(returnUrl);
-				}
 
 				return RedirectToAction("Index", "Posts");
 			}

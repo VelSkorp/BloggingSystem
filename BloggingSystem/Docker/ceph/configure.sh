@@ -9,7 +9,8 @@ docker-compose exec ceph-mon sh -c "echo 'cephx service require signatures = fal
 docker-compose exec ceph-mon sh -c "echo 'osd max object namespace len = 64' | tee -a  /etc/ceph/ceph.conf"
 
 # Configure rgw for using https
-docker-compose exec ceph-mon sh -c "echo 'rgw_frontends = beast ssl_port=7481 ssl_certificate=/certs/bloggingsystem.crt ssl_private_key=/certs/bloggingsystem.key' | tee -a  /etc/ceph/ceph.conf"
+docker-compose exec ceph-mon sh -c "echo 'rgw_frontends = beast port=7480 ssl_port=7481 ssl_certificate=/certs/bloggingsystem.crt ssl_private_key=/certs/bloggingsystem.key' | tee -a  /etc/ceph/ceph.conf"
+docker-compose exec ceph-mon sh -c "echo 'rgw_verify_ssl = false' | tee -a  /etc/ceph/ceph.conf"
 
 # Must be for osd run
 docker-compose exec ceph-mon sh -c "echo 'osd max object name len = 256' | tee -a /etc/ceph/ceph.conf"
