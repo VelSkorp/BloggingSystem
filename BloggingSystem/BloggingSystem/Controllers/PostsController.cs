@@ -29,9 +29,12 @@ namespace BloggingSystem
 
 			posts.ForEach(post =>
 			{
-				for (var i = 0; i < post.Images.Count; i++)
+				if (post.Images.All(image => image != null))
 				{
-					post.Images[i] = _imageRepository.GetImageUrl(post.Images[i]);
+					for (var i = 0; i < post.Images.Count; i++)
+					{
+						post.Images[i] = _imageRepository.GetImageUrl(post.Images[i]);
+					}
 				}
 			});
 

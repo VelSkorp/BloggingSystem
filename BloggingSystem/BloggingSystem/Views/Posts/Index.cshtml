@@ -31,7 +31,7 @@
 			</div>
 			<div class="card-body">
 				<p>@post.Content</p>
-				@if (post.Images != null && post.Images.Any())
+				@if (post.Images != null && post.Images.All(image => image != null))
 				{
 					<div class="row">
 						@foreach (var imageUrl in post.Images)
@@ -43,7 +43,7 @@
 					</div>
 				}
 			</div>
-			<div class="card-footer d-flex">
+			<div class="card-footer">
 				@if (post.Comments != null && post.Comments.Any())
 				{
 					<h5>Comments:</h5>
