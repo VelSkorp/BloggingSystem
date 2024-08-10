@@ -11,6 +11,9 @@ xpack.license.self_generated.type: trial
 # Paths to certificate and key files
 xpack.security.http.ssl.key: bloggingsystem.key
 xpack.security.http.ssl.certificate: bloggingsystem.crt
-xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.key: bloggingsystem.key
 xpack.security.transport.ssl.certificate: bloggingsystem.crt
+
+# For production use certificate
+xpack.security.transport.ssl.verification_mode: none
+xpack.security.http.ssl.verification_mode: none
