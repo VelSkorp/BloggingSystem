@@ -13,19 +13,21 @@ namespace BloggingSystem
 		private readonly ILogger<PostsController> _logger;
 		private readonly IPostsRepository _postsRepository;
 		private readonly IImageRepository _imageRepository;
+		private readonly ISearchService _searchService;
 
-		public PostsController(ILogger<PostsController> logger, IPostsRepository postsRepository, IImageRepository imageRepository)
+		public PostsController(ILogger<PostsController> logger, IPostsRepository postsRepository, IImageRepository imageRepository, ISearchService searchService)
 		{
 			_logger = logger;
 			_postsRepository = postsRepository;
-			_imageRepository = imageRepository;   
+			_imageRepository = imageRepository;
+			_searchService = searchService;
 		}
 
 		public async Task<IActionResult> IndexAsync(string author)
 		{
 			var posts = string.IsNullOrEmpty(author)
-				? await _postsRepository.GetPostsAsync()
-				: await _postsRepository.GetPostsByAuthorAsync(author);
+				? await _postsRepository.GetAllPostsAsync()
+				: await _searchService.SearchPostsByAuthorAsync(author);
 
 			posts.ForEach(post =>
 			{

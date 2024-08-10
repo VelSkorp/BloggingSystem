@@ -21,8 +21,10 @@
     <None Include="Docker\certs\bloggingsystem.key" />
     <None Include="Docker\certs\bloggingsystem.pem" />
     <None Include="Docker\certs\bloggingsystem.pfx" />
-    <None Include="Docker\logstash\Dockerfile" />
-    <None Include="Docker\logstash\logstash.conf" />
+    <None Include="Docker\kibana\Dockerfile" />
+    <None Include="Docker\kibana\kibana.yml" />
+    <None Include="Docker\elasticsearch\Dockerfile" />
+    <None Include="Docker\elasticsearch\elasticsearch.yml" />
     <None Include="Docker\mongodb\init-mongo.js" />
     <None Include="RunDockerCompose.sh" />
     <None Include="StopDockerCompose.sh" />
