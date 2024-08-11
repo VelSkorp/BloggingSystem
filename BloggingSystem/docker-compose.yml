@@ -49,7 +49,9 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - ELASTIC_PASSWORD="development"
+      - CERTS_DIR=/usr/share/elasticsearch/config
+      - ELASTIC_PASSWORD=development
+      - KIBANA_PASSWORD=development
     volumes:
       - esdata:/usr/share/elasticsearch/data
     ports:

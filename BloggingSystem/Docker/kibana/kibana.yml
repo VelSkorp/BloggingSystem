@@ -3,7 +3,7 @@ server.shutdownTimeout: "5s"
 monitoring.ui.container.elasticsearch.enabled: true
 
 elasticsearch.hosts: https://elasticsearch:9200
-elasticsearch.username: "elastic"
+elasticsearch.username: "kibana_system"
 elasticsearch.password: "development"
 elasticsearch.ssl.verificationMode: none
 elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/bloggingsystem.crt

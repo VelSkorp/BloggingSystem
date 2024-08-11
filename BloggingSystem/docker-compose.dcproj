@@ -21,6 +21,7 @@
     <None Include="Docker\certs\bloggingsystem.key" />
     <None Include="Docker\certs\bloggingsystem.pem" />
     <None Include="Docker\certs\bloggingsystem.pfx" />
+    <None Include="Docker\elasticsearch\configure.sh" />
     <None Include="Docker\kibana\Dockerfile" />
     <None Include="Docker\kibana\kibana.yml" />
     <None Include="Docker\elasticsearch\Dockerfile" />

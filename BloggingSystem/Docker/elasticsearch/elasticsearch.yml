@@ -1,6 +1,7 @@
 # Network settings
 cluster.name: "docker-cluster"
-network.host: 0.0.0.0
+network.host: 127.0.0.1
+http.host: 0.0.0.0
 
 # Enable HTTPS
 xpack.security.enabled: true
