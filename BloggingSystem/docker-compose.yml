@@ -6,17 +6,6 @@ services:
       dockerfile: BloggingSystem/Dockerfile
     restart: always
     container_name: bloggingsystem
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=development
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/bloggingsystem.pfx
-      - Ceph__Endpoint=ceph-rgw
-      - Ceph__EndpointPort=7480
-      - Ceph__EndpointHttpsPort=7481
-      - Ceph__AccessKey=${ACCESS_KEY}
-      - Ceph__SecretKey=${SECRET_KEY}
-      - Ceph__BucketName=BlogImages
     volumes:
       - ./Docker/certs:/https:ro
     ports:
@@ -49,7 +38,6 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - CERTS_DIR=/usr/share/elasticsearch/config
       - ELASTIC_PASSWORD=development
       - KIBANA_PASSWORD=development
     volumes:

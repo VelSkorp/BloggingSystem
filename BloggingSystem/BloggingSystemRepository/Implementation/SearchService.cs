@@ -20,7 +20,7 @@ namespace BloggingSystemRepository
 				.Index(_elasticsearchSettings.Index)
 				.Query(query => query
 					.Term(term => term
-						.Field(field => field.Author.Suffix("keyword"))
+						.Field(field => field.Author)
 						.Value(author)
 					)
 				)
