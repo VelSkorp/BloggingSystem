@@ -15,12 +15,11 @@ namespace BloggingSystemRepository
 		public ImageRepository(IOptions<CephSettings> cephSettings, bool useHttps)
 		{
 			_cephSettings = cephSettings.Value;
-
+			
 			_s3Client = new AmazonS3Client(_cephSettings.AccessKey, _cephSettings.SecretKey, new AmazonS3Config()
 			{
-				// Use this with the production ssl certificate
-				//ServiceURL = $"{(useHttps ? "https" : "http")}://{_cephSettings.Endpoint}:{(useHttps ? _cephSettings.EndpointHttpsPort : _cephSettings.EndpointPort)}",
-				ServiceURL = $"http://{_cephSettings.Endpoint}:{_cephSettings.EndpointPort}",
+				HttpClientFactory = new BasicHttpClientFactory(),
+				ServiceURL = $"{(useHttps ? "https" : "http")}://{_cephSettings.Endpoint}:{(useHttps ? _cephSettings.EndpointHttpsPort : _cephSettings.EndpointPort)}",
 				ForcePathStyle = true
 			});
 			_transferUtility = new TransferUtility(_s3Client);
