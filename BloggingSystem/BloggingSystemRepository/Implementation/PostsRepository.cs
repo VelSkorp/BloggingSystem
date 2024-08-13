@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Elastic.Clients.Elasticsearch;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -7,13 +8,15 @@ namespace BloggingSystemRepository
 	public class PostsRepository : IPostsRepository
 	{
 		private readonly IMongoCollection<Post> _postsCollection;
+		private readonly ElasticsearchClient _elasticClient;
 
-		public PostsRepository(IMongoDatabase mongoDatabase, IOptions<BlogStoreDatabaseSettings> settings)
+		public PostsRepository(IMongoDatabase mongoDatabase, IOptions<BlogStoreDatabaseSettings> settings, ElasticsearchClient elasticClient)
 		{
 			_postsCollection = mongoDatabase.GetCollection<Post>(settings.Value.PostsCollectionName);
+			_elasticClient = elasticClient;
 		}
 
-		public async Task<List<Post>> GetPostsAsync()
+		public async Task<List<Post>> GetAllPostsAsync()
 		{ 
 			return await _postsCollection.Find(_ => true).ToListAsync();
 		}
@@ -23,19 +26,10 @@ namespace BloggingSystemRepository
 			return await _postsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 		}
 
-		public async Task<List<Post>> GetPostsByAuthorAsync(string author)
-		{
-			return await _postsCollection.Find(x => x.Author == author).ToListAsync();
-		}
-
-		public async Task<Post?> GetPostByAuthorAsync(string author)
-		{
-			return await _postsCollection.Find(x => x.Author == author).FirstOrDefaultAsync();
-		}
-
 		public async Task CreateAsync(Post newPost)
 		{
 			await _postsCollection.InsertOneAsync(newPost);
+			await _elasticClient.IndexAsync(newPost);
 		}
 
 		public async Task UpdateAsync(Post updatedPost)

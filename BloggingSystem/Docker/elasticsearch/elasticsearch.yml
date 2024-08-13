@@ -1,0 +1,20 @@
+# Network settings
+cluster.name: "docker-cluster"
+network.host: 127.0.0.1
+http.host: 0.0.0.0
+
+# Enable HTTPS
+xpack.security.enabled: true
+xpack.security.http.ssl.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.license.self_generated.type: trial
+
+# Paths to certificate and key files
+xpack.security.http.ssl.key: bloggingsystem.key
+xpack.security.http.ssl.certificate: bloggingsystem.crt
+xpack.security.transport.ssl.key: bloggingsystem.key
+xpack.security.transport.ssl.certificate: bloggingsystem.crt
+
+# For production use certificate
+xpack.security.transport.ssl.verification_mode: none
+xpack.security.http.ssl.verification_mode: none

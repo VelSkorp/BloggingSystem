@@ -1,8 +1,6 @@
 ﻿using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 
 namespace BloggingSystem
 {
@@ -21,13 +19,15 @@ namespace BloggingSystem
 			services.AddControllersWithViews();
 			services.AddHttpContextAccessor();
 
-			// Ceph S3 Configuration
-			services.Configure<CephSettings>(Configuration.GetSection("Ceph"));
-
 			// Register database services
 			services.AddMongoDatabase(Configuration);
+			services.AddElasticsearch(Configuration);
+			services.AddCeph(Configuration);
+			services.AddRedis(Configuration);
+
 			services.AddSingleton<IPostsRepository, PostsRepository>();
 			services.AddSingleton<IUserRepository, UserRepository>();
+			services.AddSingleton<ISearchService, SearchService>();
 			services.AddSingleton<IImageRepository, ImageRepository>(serviceProvider =>
 			{
 				var cephSettings = serviceProvider.GetRequiredService<IOptions<CephSettings>>().Value;
@@ -43,22 +43,6 @@ namespace BloggingSystem
 					options.LoginPath = "/Auth/Login";
 					options.AccessDeniedPath = "/Auth/AccessDenied";
 				});
-
-			// Configure data protection to use Redis
-			services.AddStackExchangeRedisCache(options =>
-			{
-				options.Configuration = Configuration.GetConnectionString("RedisConnection");
-			});
-
-			services.AddDataProtection()
-				.PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection")), "DataProtection-Keys")
-				.SetApplicationName("BloggingSystem");
-
-			services.AddAntiforgery(options =>
-			{
-				options.Cookie.Name = "X-CSRF-TOKEN";
-				options.HeaderName = "X-CSRF-TOKEN-HEADER";
-			});
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

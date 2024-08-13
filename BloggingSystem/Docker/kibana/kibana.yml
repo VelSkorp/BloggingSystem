@@ -1,0 +1,16 @@
+# Network settings
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+monitoring.ui.container.elasticsearch.enabled: true
+
+# Connection to elasticsearch
+elasticsearch.hosts: https://elasticsearch:9200
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "development"
+
+# Paths to certificate and key files
+elasticsearch.ssl.verificationMode: none
+elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/bloggingsystem.crt
+server.ssl.enabled: true
+server.ssl.key: /usr/share/kibana/config/bloggingsystem.key
+server.ssl.certificate: /usr/share/kibana/config/bloggingsystem.crt
