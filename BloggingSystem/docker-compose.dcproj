@@ -27,6 +27,9 @@
     <None Include="Docker\elasticsearch\Dockerfile" />
     <None Include="Docker\elasticsearch\elasticsearch.yml" />
     <None Include="Docker\mongodb\init-mongo.js" />
+    <None Include="Kubernetes\BloggingSystem\BloggingSystem-deployment.yaml" />
+    <None Include="Kubernetes\BloggingSystem\BloggingSystem-service.yaml" />
+    <None Include="Kubernetes\BloggingSystem\BloggingSystem-secret.yaml" />
     <None Include="RunDockerCompose.sh" />
     <None Include="StopDockerCompose.sh" />
   </ItemGroup>

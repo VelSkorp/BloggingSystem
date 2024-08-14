@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bloggingsystem-deployment
+  labels:
+    app: bloggingsystem
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bloggingsystem
+  template:
+    metadata:
+      labels:
+        app: bloggingsystem
+    spec:
+      containers:
+      - name: bloggingsystem
+        image: bloggingsystem:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080;https://+:8081"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+          value: "development"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+          value: "/https/bloggingsystem.pfx"
+        - name: Ceph__Endpoint
+          value: "ceph-rgw"
+        - name: Ceph__EndpointPort
+          value: "7480"
+        - name: Ceph__EndpointHttpsPort
+          value: "7481"
+        - name: Ceph__AccessKey
+          valueFrom:
+            secretKeyRef:
+              name: ceph-credentials
+              key: access-key
+        - name: Ceph__SecretKey
+          valueFrom:
+            secretKeyRef:
+              name: ceph-credentials
+              key: secret-key
+        - name: Ceph__BucketName
+          value: "BlogImages"
+        volumeMounts:
+        - name: cert-volume
+          mountPath: /https
+          readOnly: true
+      volumes:
+      - name: cert-volume
+        secret:
+          secretName: bloggingsystem-certs
