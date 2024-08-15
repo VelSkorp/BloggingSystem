@@ -37,6 +37,12 @@
     <None Include="Kubernetes\mongodb\mongodb-deployment.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-configmap.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-pv.yaml" />
+    <None Include="Kubernetes\redis\redis-service.yaml" />
+    <None Include="Kubernetes\redis\redis-deployment.yaml" />
+    <None Include="Kubernetes\redis\redis-pvc.yaml" />
+    <None Include="Kubernetes\redis\redis-pv.yaml" />
+    <None Include="Kubernetes\redis\Run.sh" />
+    <None Include="Kubernetes\redis\Stop.sh" />
     <None Include="RunDockerCompose.sh" />
     <None Include="StopDockerCompose.sh" />
   </ItemGroup>
