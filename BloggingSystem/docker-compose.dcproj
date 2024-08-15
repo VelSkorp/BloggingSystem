@@ -30,6 +30,13 @@
     <None Include="Kubernetes\BloggingSystem\BloggingSystem-deployment.yaml" />
     <None Include="Kubernetes\BloggingSystem\BloggingSystem-service.yaml" />
     <None Include="Kubernetes\BloggingSystem\BloggingSystem-secret.yaml" />
+    <None Include="Kubernetes\mongodb\Stop.sh" />
+    <None Include="Kubernetes\mongodb\Run.sh" />
+    <None Include="Kubernetes\mongodb\mongodb-pvc.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-service.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-deployment.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-configmap.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-pv.yaml" />
     <None Include="RunDockerCompose.sh" />
     <None Include="StopDockerCompose.sh" />
   </ItemGroup>
