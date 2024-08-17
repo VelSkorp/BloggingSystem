@@ -5,4 +5,4 @@ kubectl delete -f kibana-service.yaml
 kubectl delete -f kibana-configmap.yaml
 kubectl delete pods -l app=kibana
 
-set +
+set +x

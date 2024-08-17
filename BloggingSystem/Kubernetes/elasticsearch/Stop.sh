@@ -8,4 +8,4 @@ kubectl delete -f elasticsearch-pv.yaml
 kubectl delete -f elasticsearch-secret.yaml
 kubectl delete pods -l app=elasticsearch
 
-set +
+set +x

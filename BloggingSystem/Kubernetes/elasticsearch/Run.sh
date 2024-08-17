@@ -7,4 +7,4 @@ kubectl apply -f elasticsearch-pvc.yaml
 kubectl apply -f elasticsearch-deployment.yaml
 kubectl apply -f elasticsearch-service.yaml
 
-set +
+set +x

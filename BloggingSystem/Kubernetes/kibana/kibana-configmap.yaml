@@ -9,7 +9,7 @@ data:
     monitoring.ui.container.elasticsearch.enabled: true
     elasticsearch.hosts: https://elasticsearch:9200
     elasticsearch.username: "kibana_system"
-    elasticsearch.password: "development"
+    elasticsearch.password: "${KIBANA_PASSWORD}"
     elasticsearch.ssl.verificationMode: none
     elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/bloggingsystem.crt
     server.ssl.enabled: true
