@@ -8,4 +8,3 @@ kubectl apply -f elasticsearch-deployment.yaml
 kubectl apply -f elasticsearch-service.yaml
 
 set +
-$SHELL

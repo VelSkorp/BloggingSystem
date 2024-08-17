@@ -33,13 +33,18 @@ spec:
               name: elasticsearch-credentials
               key: kibana_password
         volumeMounts:
-        - name: elasticsearch-data
-          mountPath: /usr/share/elasticsearch/data
+        # - name: elasticsearch-data
+        #   mountPath: /usr/share/elasticsearch/data
+        #   readOnly: false
         - name: elasticsearch-config
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
         - name: elasticsearch-certificates
-          mountPath: /usr/share/elasticsearch/config/certs
+          mountPath: /usr/share/elasticsearch/config/bloggingsystem.crt
+          subPath: bloggingsystem.crt
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/bloggingsystem.key
+          subPath: bloggingsystem.key
       volumes:
       - name: elasticsearch-data
         persistentVolumeClaim:
