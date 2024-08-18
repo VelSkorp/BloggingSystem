@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-mon-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-mon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-mon
+  template:
+    metadata:
+      labels:
+        app: ceph-mon
+    spec:
+      containers:
+      - name: ceph-mon
+        image: ceph/daemon:latest-mimic
+        command: ["mon"]
+        env:
+        - name: MON_IP
+          value: "192.168.55.2"
+        - name: CEPH_PUBLIC_NETWORK
+          value: "192.168.55.0/24"
+        ports:
+        - containerPort: 6789
+        volumeMounts:
+        # - name: cephdata
+        #   mountPath: /etc/ceph
+        # - name: cephdata
+        #   mountPath: /var/lib/ceph/
+      volumes:
+      - name: cephdata
+        persistentVolumeClaim:
+          claimName: ceph-mon-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-mon
+spec:
+  selector:
+    app: ceph-mon
+  ports:
+  - protocol: TCP
+    port: 6789
+    targetPort: 6789

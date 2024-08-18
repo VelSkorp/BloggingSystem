@@ -1,15 +1,18 @@
 set -x
 
-#docker-compose up -d ceph-mon ceph-mgr
+kubectl apply -f ceph-mon-deployment.yaml
+kubectl apply -f ceph-mgr-deployment.yaml
 
-#source ./Docker/ceph/configure.sh
+source ./ceph/configure.sh
 
-#docker-compose restart ceph-mon ceph-mgr
+kubectl rollout restart deployment ceph-mon
+kubectl rollout restart deployment ceph-mgr
 
-#docker-compose up -d ceph-osd ceph-rgw
+kubectl apply -f ceph-osd-deployment.yaml
+kubectl apply -f ceph-rgw-deployment.yaml
 
 # Exporting keys from dashboard.sh
-#source ./Docker/ceph/dashboard.sh
+source ./ceph/dashboard.sh
 
 source ./elasticsearch/Run.sh
 
@@ -20,8 +23,8 @@ until kubectl exec $(kubectl get pod -l app=elasticsearch -o jsonpath='{.items[0
 done
 
 source ./elasticsearch/configure.sh
-source ./kibana/Run.sh
 
+source ./kibana/Run.sh
 #docker-compose up -d --build
 
 set +x

@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-rgw-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-rgw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-rgw
+  template:
+    metadata:
+      labels:
+        app: ceph-rgw
+    spec:
+      containers:
+      - name: ceph-rgw
+        image: quay.io/ceph/daemon
+        command: ["rgw"]
+        env:
+        - name: RGW_FRONTENDS
+          value: "beast port=7480 ssl_port=7481 ssl_certificate=/certs/bloggingsystem.crt ssl_private_key=/certs/bloggingsystem.key"
+        volumeMounts:
+        - name: cephdata
+          mountPath: /etc/ceph
+        - name: cephdata
+          mountPath: /var/lib/ceph/
+        - name: rgw-certs
+          mountPath: /certs/bloggingsystem.crt
+          subPath: bloggingsystem.crt
+        - name: rgw-certs
+          mountPath: /certs/bloggingsystem.key
+          subPath: bloggingsystem.key
+      volumes:
+      - name: cephdata
+        persistentVolumeClaim:
+          claimName: ceph-rgw-pvc
+      - name: rgw-certs
+        secret:
+          secretName: bloggingsystem-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-rgw
+spec:
+  selector:
+    app: ceph-rgw
+  ports:
+  - protocol: TCP
+    port: 7480
+    targetPort: 7480
+  - protocol: TCP
+    port: 7481
+    targetPort: 7481
