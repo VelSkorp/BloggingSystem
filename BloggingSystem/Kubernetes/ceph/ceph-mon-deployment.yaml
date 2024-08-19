@@ -7,7 +7,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,26 +23,43 @@ spec:
       labels:
         app: ceph-mon
     spec:
+      initContainers:
+      - name: ceph-mon-init
+        image: ceph/daemon:latest-mimic
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            mkdir -p /var/lib/ceph/mon/ceph-admin
+            ceph-mon --cluster ceph --mkfs --mon-cluster-log-to-stderr --log-stderr-prefix=debug
+            chown -R ceph:ceph /var/lib/ceph/mon/ceph-admin
+        volumeMounts:
+        - name: cephconf
+          mountPath: /etc/ceph
+        - name: cephdata
+          mountPath: /var/lib/ceph/
       containers:
       - name: ceph-mon
         image: ceph/daemon:latest-mimic
-        command: ["mon"]
-        env:
-        - name: MON_IP
-          value: "192.168.55.2"
-        - name: CEPH_PUBLIC_NETWORK
-          value: "192.168.55.0/24"
+        command: ["sh", "-c", "/usr/bin/ceph-mon --cluster ceph --setuser ceph --setgroup ceph -d --mon-cluster-log-to-stderr --log-stderr-prefix=debug --public-addr $(hostname -i):6789"]
+        securityContext:
+          privileged: true
         ports:
         - containerPort: 6789
         volumeMounts:
-        # - name: cephdata
-        #   mountPath: /etc/ceph
-        # - name: cephdata
-        #   mountPath: /var/lib/ceph/
+        - name: cephconf
+          mountPath: /etc/ceph
+        - name: cephconf
+          mountPath: /var/lib/ceph/mon/ceph-admin/keyring
+          subPath: keyring
+        - name: cephdata
+          mountPath: /var/lib/ceph/
       volumes:
       - name: cephdata
         persistentVolumeClaim:
           claimName: ceph-mon-pvc
+      - name: cephconf
+        configMap:
+          name: ceph-config
 ---
 apiVersion: v1
 kind: Service

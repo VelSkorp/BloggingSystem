@@ -35,6 +35,7 @@
     <None Include="Kubernetes\ceph\ceph-rgw-deployment.yaml" />
     <None Include="Kubernetes\ceph\configure.sh" />
     <None Include="Kubernetes\ceph\dashboard.sh" />
+    <None Include="Kubernetes\ceph\ceph-configmap.yaml" />
     <None Include="Kubernetes\certs\bloggingsystem-certs.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-secret.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-configmap.yaml" />
