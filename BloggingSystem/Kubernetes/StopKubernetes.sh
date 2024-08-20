@@ -1,6 +1,8 @@
 set -x
 
-docker-compose down
-docker volume rm $(docker volume ls)
+kubectl delete -f ceph/ceph-mgr-deployment.yaml
+kubectl delete -f ceph/ceph-mon-deployment.yaml
+kubectl delete -f ceph/ceph-pvc.yaml
+
 
 set +x
