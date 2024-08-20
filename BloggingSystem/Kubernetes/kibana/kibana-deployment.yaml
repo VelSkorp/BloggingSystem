@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.15.0
+        env:
+        - name: KIBANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-credentials
+              key: kibana_password
+        ports:
+        - containerPort: 5601
+        volumeMounts:
+        - name: kibana-config
+          mountPath: /usr/share/kibana/config/kibana.yml
+          subPath: kibana.yml
+        - name: kibana-certificates
+          mountPath: /usr/share/kibana/config/bloggingsystem.crt
+          subPath: bloggingsystem.crt
+        - name: kibana-certificates
+          mountPath: /usr/share/kibana/config/bloggingsystem.key
+          subPath: bloggingsystem.key
+      volumes:
+      - name: kibana-config
+        configMap:
+          name: kibana-config
+      - name: kibana-certificates
+        secret:
+          secretName: bloggingsystem-certs

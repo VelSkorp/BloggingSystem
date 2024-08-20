@@ -27,7 +27,49 @@
     <None Include="Docker\elasticsearch\Dockerfile" />
     <None Include="Docker\elasticsearch\elasticsearch.yml" />
     <None Include="Docker\mongodb\init-mongo.js" />
+    <None Include="Kubernetes\bloggingsystem\bloggingsystem-deployment.yaml" />
+    <None Include="Kubernetes\bloggingsystem\bloggingsystem-service.yaml" />
+    <None Include="Kubernetes\ceph\ceph-mgr-deployment.yaml" />
+    <None Include="Kubernetes\ceph\ceph-mon-deployment.yaml" />
+    <None Include="Kubernetes\ceph\ceph-osd-deployment.yaml" />
+    <None Include="Kubernetes\ceph\ceph-rgw-deployment.yaml" />
+    <None Include="Kubernetes\ceph\configure.sh" />
+    <None Include="Kubernetes\ceph\dashboard.sh" />
+    <None Include="Kubernetes\ceph\ceph-configmap.yaml" />
+    <None Include="Kubernetes\certs\bloggingsystem-certs.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-secret.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-configmap.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-pv.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-pvc.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-deployment.yaml" />
+    <None Include="Kubernetes\elasticsearch\elasticsearch-service.yaml" />
+    <None Include="Kubernetes\elasticsearch\configure.sh" />
+    <None Include="Kubernetes\elasticsearch\Run.sh" />
+    <None Include="Kubernetes\elasticsearch\Stop.sh" />
+    <None Include="Kubernetes\kibana\kibana-deployment.yaml" />
+    <None Include="Kubernetes\kibana\kibana-service.yaml" />
+    <None Include="Kubernetes\kibana\kibana-configmap.yaml" />
+    <None Include="Kubernetes\kibana\Run.sh" />
+    <None Include="Kubernetes\kibana\Stop.sh" />
+    <None Include="Kubernetes\mongodb\Stop.sh" />
+    <None Include="Kubernetes\mongodb\Run.sh" />
+    <None Include="Kubernetes\mongodb\mongodb-pvc.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-service.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-deployment.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-configmap.yaml" />
+    <None Include="Kubernetes\mongodb\mongodb-pv.yaml" />
+    <None Include="Kubernetes\redis\redis-service.yaml" />
+    <None Include="Kubernetes\redis\redis-deployment.yaml" />
+    <None Include="Kubernetes\redis\redis-pvc.yaml" />
+    <None Include="Kubernetes\redis\redis-pv.yaml" />
+    <None Include="Kubernetes\redis\Run.sh" />
+    <None Include="Kubernetes\redis\Stop.sh" />
+    <None Include="Kubernetes\RunKubernetes.sh" />
+    <None Include="Kubernetes\StopKubernetes.sh" />
     <None Include="RunDockerCompose.sh" />
     <None Include="StopDockerCompose.sh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Kubernetes\elasticsearch\data\" />
   </ItemGroup>
 </Project>
