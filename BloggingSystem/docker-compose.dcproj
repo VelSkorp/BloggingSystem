@@ -29,6 +29,7 @@
     <None Include="Docker\mongodb\init-mongo.js" />
     <None Include="Kubernetes\bloggingsystem\bloggingsystem-deployment.yaml" />
     <None Include="Kubernetes\bloggingsystem\bloggingsystem-service.yaml" />
+    <None Include="Kubernetes\ceph\ceph-configmap.yaml" />
     <None Include="Kubernetes\ceph\ceph-mgr-deployment.yaml" />
     <None Include="Kubernetes\ceph\ceph-mon-deployment.yaml" />
     <None Include="Kubernetes\ceph\ceph-osd-deployment.yaml" />

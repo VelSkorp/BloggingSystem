@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: ceph-mon
 spec:
+  serviceName: "ceph-mon"
   replicas: 1
   selector:
     matchLabels:
@@ -26,23 +27,36 @@ spec:
         ports:
         - containerPort: 6789
         volumeMounts:
+        - name: ceph-conf
+          mountPath: /etc/ceph/ceph.conf
+          subPath: ceph.conf
         - name: cephdata
           mountPath: /etc/ceph
         - name: cephdata
           mountPath: /var/lib/ceph/
+        - name: ceph-logs
+          mountPath: /var/log/ceph
       volumes:
       - name: cephdata
         persistentVolumeClaim:
           claimName: ceph-pvc
+      - name: ceph-conf
+        configMap:
+          name: ceph-config
+      - name: ceph-logs
+        emptyDir: {}
+  updateStrategy:
+    type: RollingUpdate
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: ceph-mon
 spec:
+  type: ClusterIP
   selector:
     app: ceph-mon
   ports:
-  - protocol: TCP
-    port: 6789
-    targetPort: 6789
+    - protocol: TCP
+      port: 6789
+      targetPort: 6789

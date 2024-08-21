@@ -16,6 +16,7 @@ kubectl exec $_cephMonName -- sh -c "echo 'rgw_verify_ssl = false' | tee -a  /et
 
 # Must be for osd run
 kubectl exec $_cephMonName -- sh -c "echo 'osd max object name len = 256' | tee -a /etc/ceph/ceph.conf"
+kubectl exec $_cephMonName -- sh -c "echo 'journal_force_aio = true' | tee -a /etc/ceph/ceph.conf"
 
 # Must be for non health warning
 kubectl exec $_cephMonName ceph osd pool create default.rgw.buckets.data 128 128

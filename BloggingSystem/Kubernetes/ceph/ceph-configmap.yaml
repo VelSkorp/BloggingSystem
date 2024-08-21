@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-config
+data:
+  ceph.conf: |
+    [global]
+    fsid = a7a3292a-15d1-4f7a-a8ca-3b73eb799b5f
+    mon initial members = ceph-mon-0
+    mon host = ceph-mon:6789
+    public network = 10.1.0.0/24
+    cluster network = 10.1.0.0/24
+    osd journal size = 100
+    log file = /dev/null
+    osd pool default min size = 1
+    osd pool default size = 1
+    max open files = 655350
+    cephx cluster require signatures = false
+    cephx service require signatures = false
+    osd max object namespace len = 64
+    rgw_frontends = beast port=7480 ssl_port=7481 ssl_certificate=/certs/bloggingsystem.crt ssl_private_key=/certs/bloggingsystem.key
+    rgw_verify_ssl = false
+    osd max object name len = 256
