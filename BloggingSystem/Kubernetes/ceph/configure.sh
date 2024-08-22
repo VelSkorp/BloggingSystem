@@ -19,7 +19,7 @@ kubectl exec $_cephMonName -- sh -c "echo 'osd max object name len = 256' | tee 
 kubectl exec $_cephMonName -- sh -c "echo 'journal_force_aio = true' | tee -a /etc/ceph/ceph.conf"
 
 # Must be for non health warning
-kubectl exec $_cephMonName ceph osd pool create default.rgw.buckets.data 128 128
+kubectl exec $_cephMonName -- ceph osd pool create default.rgw.buckets.data 128 128
 
 export CEPH_MON_NAME="$_cephMonName"
 

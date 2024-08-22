@@ -23,17 +23,19 @@ spec:
         - containerPort: 7480
         - containerPort: 7481
         volumeMounts:
+        - name: ceph-conf
+          mountPath: /etc/ceph/ceph.conf
+          subPath: ceph.conf
         - name: cephdata
           mountPath: /etc/ceph
         - name: cephdata
           mountPath: /var/lib/ceph/
         - name: rgw-certs
-          mountPath: /certs/bloggingsystem.crt
-          subPath: bloggingsystem.crt
-        - name: rgw-certs
-          mountPath: /certs/bloggingsystem.key
-          subPath: bloggingsystem.key
+          mountPath: /certs
       volumes:
+      - name: ceph-conf
+        configMap:
+          name: ceph-config
       - name: cephdata
         persistentVolumeClaim:
           claimName: ceph-pvc

@@ -3,16 +3,18 @@ set -x
 kubectl apply -f certs/bloggingsystem-certs.yaml
 
 kubectl apply -f ceph/ceph-pvc.yaml
+kubectl apply -f ceph/ceph-configmap.yaml
 kubectl apply -f ceph/ceph-mon-deployment.yaml
 
-sleep 20
-source ceph/configure.sh
+sleep 60
+
+kubectl exec ceph-mon-0 -- ceph osd pool create default.rgw.buckets.data 128 128
 
 kubectl apply -f ceph/ceph-mgr-deployment.yaml
 kubectl apply -f ceph/ceph-osd-deployment.yaml
 kubectl apply -f ceph/ceph-rgw-deployment.yaml
 
-sleep 20
+sleep 60
 
 source ceph/dashboard.sh
 

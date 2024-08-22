@@ -34,17 +34,13 @@ spec:
           mountPath: /etc/ceph
         - name: cephdata
           mountPath: /var/lib/ceph/
-        - name: ceph-logs
-          mountPath: /var/log/ceph
       volumes:
-      - name: cephdata
-        persistentVolumeClaim:
-          claimName: ceph-pvc
       - name: ceph-conf
         configMap:
           name: ceph-config
-      - name: ceph-logs
-        emptyDir: {}
+      - name: cephdata
+        persistentVolumeClaim:
+          claimName: ceph-pvc
   updateStrategy:
     type: RollingUpdate
 ---

@@ -22,11 +22,17 @@ spec:
         ports:
         - containerPort: 8443
         volumeMounts:
+        - name: ceph-conf
+          mountPath: /etc/ceph/ceph.conf
+          subPath: ceph.conf
         - name: cephdata
           mountPath: /etc/ceph
         - name: cephdata
           mountPath: /var/lib/ceph/
       volumes:
+      - name: ceph-conf
+        configMap:
+          name: ceph-config
       - name: cephdata
         persistentVolumeClaim:
           claimName: ceph-pvc
