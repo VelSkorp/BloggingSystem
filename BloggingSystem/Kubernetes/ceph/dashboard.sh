@@ -2,7 +2,6 @@ set -x
 
 CEPH_MON_NAME=$(kubectl get pod -l app=ceph-mon -o jsonpath='{.items[0].metadata.name}')
 
-
 # Enable the dashboard module
 kubectl exec $CEPH_MON_NAME -- ceph mgr module enable dashboard
 
@@ -26,9 +25,11 @@ _secretkey=$(kubectl exec $CEPH_MON_NAME -- radosgw-admin user info --uid dashus
 kubectl exec $CEPH_MON_NAME -- ceph dashboard set-rgw-api-access-key $_accesskey
 kubectl exec $CEPH_MON_NAME -- ceph dashboard set-rgw-api-secret-key $_secretkey
 
-# Export keys as environment variables to be used in docker-compose.yml
-export ACCESS_KEY="$_accesskey"
-export SECRET_KEY="$_secretkey"
+# Export keys as k8s secret to be used in bloggingsystem-deployment.yaml
+kubectl create secret generic ceph-credentials \
+  --from-literal=accesskey="$_accesskey" \
+  --from-literal=secretkey="$_secretkey" \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 # Set pool size and enable rgw application
 kubectl exec $CEPH_MON_NAME -- ceph osd pool set default.rgw.buckets.data size 1

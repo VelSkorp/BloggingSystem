@@ -7,7 +7,7 @@ services:
     restart: always
     container_name: bloggingsystem
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_URLS=https://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=development
