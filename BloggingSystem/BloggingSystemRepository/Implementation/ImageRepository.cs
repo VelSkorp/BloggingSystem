@@ -11,8 +11,9 @@ namespace BloggingSystemRepository
 		private readonly ITransferUtility _transferUtility;
 		private readonly CephSettings _cephSettings;
 		private readonly bool _useHttps;
+		private readonly string _environment;
 
-		public ImageRepository(IOptions<CephSettings> cephSettings, bool useHttps)
+		public ImageRepository(IOptions<CephSettings> cephSettings, string environment, bool useHttps)
 		{
 			_cephSettings = cephSettings.Value;
 			
@@ -24,6 +25,7 @@ namespace BloggingSystemRepository
 			});
 			_transferUtility = new TransferUtility(_s3Client);
 			_useHttps = useHttps;
+			_environment = environment;
 		}
 
 		public async Task<string> UploadImageAsync(IFormFile image)
@@ -54,7 +56,11 @@ namespace BloggingSystemRepository
 
 		public string GetImageUrl(string key)
 		{
-			return $"{(_useHttps ? "https" : "http")}://localhost:{(_useHttps ? _cephSettings.EndpointHttpsPort : _cephSettings.EndpointPort)}/{_cephSettings.BucketName}/{key}";
+			var port = _environment.Equals("Kubernetes")
+				? _useHttps ? _cephSettings.EndpointHttpsExternalPort: _cephSettings.EndpointExternalPort
+				: _useHttps ? _cephSettings.EndpointHttpsPort : _cephSettings.EndpointPort;
+
+			return $"{(_useHttps ? "https" : "http")}://localhost:{port}/{_cephSettings.BucketName}/{key}";
 		}
 	}
 }

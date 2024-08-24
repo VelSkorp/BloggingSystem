@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: bloggingsystem
-        image: ${DOCKER_REGISTRY-}bloggingsystem
+        image: velscorp/bloggingsystem
         ports:
         - containerPort: 8080
         - containerPort: 8081

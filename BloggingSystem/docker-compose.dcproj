@@ -15,6 +15,7 @@
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="Dockerfile" />
     <None Include="Docker\ceph\configure.sh" />
     <None Include="Docker\ceph\dashboard.sh" />
     <None Include="Docker\certs\bloggingsystem.crt" />
@@ -43,7 +44,6 @@
     <None Include="Kubernetes\certs\bloggingsystem-certs.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-secret.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-configmap.yaml" />
-    <None Include="Kubernetes\elasticsearch\elasticsearch-pv.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-pvc.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-deployment.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-service.yaml" />
@@ -60,11 +60,9 @@
     <None Include="Kubernetes\mongodb\mongodb-service.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-deployment.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-configmap.yaml" />
-    <None Include="Kubernetes\mongodb\mongodb-pv.yaml" />
     <None Include="Kubernetes\redis\redis-service.yaml" />
     <None Include="Kubernetes\redis\redis-deployment.yaml" />
     <None Include="Kubernetes\redis\redis-pvc.yaml" />
-    <None Include="Kubernetes\redis\redis-pv.yaml" />
     <None Include="Kubernetes\redis\Run.sh" />
     <None Include="Kubernetes\redis\Stop.sh" />
     <None Include="Kubernetes\RunKubernetes.sh" />

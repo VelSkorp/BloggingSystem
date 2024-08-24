@@ -2,14 +2,13 @@ set -x
 
 kubectl apply -f elasticsearch-configmap.yaml
 kubectl apply -f elasticsearch-secret.yaml
-kubectl apply -f elasticsearch-pv.yaml
 kubectl apply -f elasticsearch-pvc.yaml
 kubectl apply -f elasticsearch-deployment.yaml
 kubectl apply -f elasticsearch-service.yaml
 
 # Wait for Elasticsearch pod to be ready
 #until kubectl exec $(kubectl get pod -l app=elasticsearch -o jsonpath='{.items[0].metadata.name}') -- curl -s --cacert /usr/share/elasticsearch/config/bloggingsystem.crt https://localhost:9200 | grep -q "missing authentication credentials"; do
-until curl -k -s --head --request GET https://elasticsearch:9200 | grep "200 OK" > /dev/null; do 
+until curl -k -s --head --request GET https://elastic:development@localhost:30092 | grep "200 OK" > /dev/null; do 
   echo "Waiting for Elasticsearch..."
   sleep 10
 done

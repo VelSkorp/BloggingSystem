@@ -3,6 +3,7 @@ set -x
 CEPH_MON_NAME=$(kubectl get pod -l app=ceph-mon -o jsonpath='{.items[0].metadata.name}')
 
 # Enable the dashboard module
+kubectl exec $CEPH_MON_NAME -- ceph mgr module disable dashboard
 kubectl exec $CEPH_MON_NAME -- ceph mgr module enable dashboard
 
 # Set login credentials
@@ -11,7 +12,7 @@ kubectl exec $CEPH_MON_NAME -- ceph dashboard set-login-credentials admin admin
 # Configure the dashboard to use the self signed certificate
 kubectl exec $CEPH_MON_NAME -- ceph config set mgr mgr/dashboard/ssl true
 kubectl exec $CEPH_MON_NAME -- ceph dashboard create-self-signed-cert
-kubectl exec $CEPH_MON_NAME -- ceph config set mgr mgr/dashboard/server_addr ceph-mgr
+kubectl exec $CEPH_MON_NAME -- ceph config set mgr mgr/dashboard/server_addr 0.0.0.0
 kubectl exec $CEPH_MON_NAME -- ceph config set mgr mgr/dashboard/server_port 8443
 
 # Create dashboard user

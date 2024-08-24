@@ -22,6 +22,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 COPY Docker/certs/bloggingsystem.crt /usr/local/share/ca-certificates
 RUN /usr/sbin/update-ca-certificates
-ENV ASPNETCORE_URLS=http://+:8080
-ENV ASPNETCORE_URLS=https://+:8081
+ENV ASPNETCORE_URLS="http://+:8080;https://+:8081"
 ENTRYPOINT ["dotnet", "BloggingSystem.dll"]
