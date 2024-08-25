@@ -5,9 +5,9 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloggingSystem", "BloggingSystem\BloggingSystem.csproj", "{DE455047-A760-4293-95C0-6A3B3F663F02}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{85997EA1-861B-41FC-9E00-50C468A8E86C}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-k8s-containers", "docker-k8s-containers.dcproj", "{85997EA1-861B-41FC-9E00-50C468A8E86C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingSystemRepository", "BloggingSystemRepository\BloggingSystemRepository.csproj", "{F36C5AD0-3484-4FE1-9E7A-7A47F051AD64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloggingSystemRepository", "BloggingSystemRepository\BloggingSystemRepository.csproj", "{F36C5AD0-3484-4FE1-9E7A-7A47F051AD64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

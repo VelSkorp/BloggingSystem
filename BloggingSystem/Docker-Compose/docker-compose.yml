@@ -2,12 +2,12 @@ services:
   bloggingsystem:
     image: ${DOCKER_REGISTRY-}bloggingsystem
     build:
-      context: .
-      dockerfile: BloggingSystem/Dockerfile
+      context: ..
+      dockerfile: Dockerfile
     restart: always
     container_name: bloggingsystem
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_ENVIRONMENT=DockerCompose
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_URLS=https://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=development
@@ -19,7 +19,7 @@ services:
       - Ceph__SecretKey=${SECRET_KEY}
       - Ceph__BucketName=BlogImages
     volumes:
-      - ./Docker/certs:/https:ro
+      - ./certs:/https:ro
     ports:
       - 8080:8080
       - 8081:8081
@@ -37,14 +37,14 @@ services:
       MONGO_INITDB_DATABASE: BlogStore
     volumes:
       - mongodata:/data/db
-      - ./Docker/mongodb/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
       - 27017:27017
 
   elasticsearch:
     build:
       context: .
-      dockerfile: Docker/elasticsearch/Dockerfile
+      dockerfile: elasticsearch/Dockerfile
     restart: always
     container_name: elasticsearch
     environment:
@@ -60,7 +60,7 @@ services:
   kibana:
     build:
       context: .
-      dockerfile: Docker/kibana/Dockerfile
+      dockerfile: kibana/Dockerfile
     restart: always
     container_name: kibana
     ports:
@@ -143,7 +143,7 @@ services:
     volumes:
       - cephdata:/etc/ceph
       - cephdata:/var/lib/ceph/
-      - ./Docker/certs:/certs:ro
+      - ./certs:/certs:ro
     ports:
       - 7480:7480
       - 7481:7481
