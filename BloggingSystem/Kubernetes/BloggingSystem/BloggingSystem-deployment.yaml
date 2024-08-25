@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
       - name: bloggingsystem
-        image: bloggingsystem:latest
+        image: velscorp/bloggingsystem
         ports:
         - containerPort: 8080
         - containerPort: 8081
         env:
         - name: ASPNETCORE_ENVIRONMENT
-          value: "Development"
+          value: "Kubernetes"
         - name: ASPNETCORE_URLS
           value: "http://+:8080;https://+:8081"
         - name: ASPNETCORE_Kestrel__Certificates__Default__Password
@@ -39,19 +39,18 @@ spec:
           valueFrom:
             secretKeyRef:
               name: ceph-credentials
-              key: access-key
+              key: accesskey
         - name: Ceph__SecretKey
           valueFrom:
             secretKeyRef:
               name: ceph-credentials
-              key: secret-key
+              key: secretkey
         - name: Ceph__BucketName
           value: "BlogImages"
         volumeMounts:
-        - name: cert-volume
+        - name: certs
           mountPath: /https
-          readOnly: true
       volumes:
-      - name: cert-volume
+      - name: certs
         secret:
           secretName: bloggingsystem-certs

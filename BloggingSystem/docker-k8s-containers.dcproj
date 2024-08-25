@@ -5,45 +5,61 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>85997ea1-861b-41fc-9e00-50c468a8e86c</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerLaunchAction>None</DockerLaunchAction>
+    <DockerComposeBaseFilePath>./Docker-Compose/docker-compose</DockerComposeBaseFilePath>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>bloggingsystem</DockerServiceName>
   </PropertyGroup>
+  <Target Name="RunCustomDockerCompose" BeforeTargets="Run;DockerComposeUp" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'DockerCompose'">
+    <Exec Command="bash Docker-Compose/RunDockerCompose.sh" />
+  </Target>
+  <Target Name="RunCustomKubernetes" BeforeTargets="Run;DockerComposeUp" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Kubernetes'">
+    <Exec Command="bash Kubernetes/RunKubernetes.sh" />
+  </Target>
+  <Target Name="DockerComposeUp" Condition="false" />
+  <Target Name="DockerComposeDown" Condition="false" />
+  <Target Name="StopCustomDockerCompose" AfterTargets="Clean;DockerComposeDown">
+    <Exec Command="bash Docker-Compose/StopDockerCompose.sh" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'DockerCompose'" />
+  </Target>
+  <Target Name="StopCustomKubernetes" AfterTargets="Clean;DockerComposeDown">
+    <Exec Command="bash Kubernetes/StopKubernetes.sh" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Kubernetes'" />
+  </Target>
   <ItemGroup>
-    <None Remove="Docker\ceph-config\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="Docker\ceph\configure.sh" />
-    <None Include="Docker\ceph\dashboard.sh" />
-    <None Include="Docker\certs\bloggingsystem.crt" />
-    <None Include="Docker\certs\bloggingsystem.key" />
-    <None Include="Docker\certs\bloggingsystem.pem" />
-    <None Include="Docker\certs\bloggingsystem.pfx" />
-    <None Include="Docker\elasticsearch\configure.sh" />
-    <None Include="Docker\kibana\Dockerfile" />
-    <None Include="Docker\kibana\kibana.yml" />
-    <None Include="Docker\elasticsearch\Dockerfile" />
-    <None Include="Docker\elasticsearch\elasticsearch.yml" />
-    <None Include="Docker\mongodb\init-mongo.js" />
+    <None Include="Docker-Compose\docker-compose.yml" />
+    <None Include="Dockerfile" />
+    <None Include="Docker-Compose\ceph\configure.sh" />
+    <None Include="Docker-Compose\ceph\dashboard.sh" />
+    <None Include="Docker-Compose\certs\bloggingsystem.crt" />
+    <None Include="Docker-Compose\certs\bloggingsystem.key" />
+    <None Include="Docker-Compose\certs\bloggingsystem.pem" />
+    <None Include="Docker-Compose\certs\bloggingsystem.pfx" />
+    <None Include="Docker-Compose\elasticsearch\configure.sh" />
+    <None Include="Docker-Compose\kibana\Dockerfile" />
+    <None Include="Docker-Compose\kibana\kibana.yml" />
+    <None Include="Docker-Compose\elasticsearch\Dockerfile" />
+    <None Include="Docker-Compose\elasticsearch\elasticsearch.yml" />
+    <None Include="Docker-Compose\mongodb\init-mongo.js" />
+    <None Include="Docker-Compose\README.md" />
     <None Include="Kubernetes\bloggingsystem\bloggingsystem-deployment.yaml" />
     <None Include="Kubernetes\bloggingsystem\bloggingsystem-service.yaml" />
+    <None Include="Kubernetes\bloggingsystem\Run.sh" />
+    <None Include="Kubernetes\bloggingsystem\Stop.sh" />
+    <None Include="Kubernetes\ceph\ceph-configmap.yaml" />
     <None Include="Kubernetes\ceph\ceph-mgr-deployment.yaml" />
     <None Include="Kubernetes\ceph\ceph-mon-deployment.yaml" />
     <None Include="Kubernetes\ceph\ceph-osd-deployment.yaml" />
     <None Include="Kubernetes\ceph\ceph-rgw-deployment.yaml" />
-    <None Include="Kubernetes\ceph\configure.sh" />
     <None Include="Kubernetes\ceph\dashboard.sh" />
     <None Include="Kubernetes\ceph\ceph-pvc.yaml" />
+    <None Include="Kubernetes\ceph\Run.sh" />
+    <None Include="Kubernetes\ceph\Stop.sh" />
     <None Include="Kubernetes\certs\bloggingsystem-certs.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-secret.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-configmap.yaml" />
-    <None Include="Kubernetes\elasticsearch\elasticsearch-pv.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-pvc.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-deployment.yaml" />
     <None Include="Kubernetes\elasticsearch\elasticsearch-service.yaml" />
-    <None Include="Kubernetes\elasticsearch\configure.sh" />
     <None Include="Kubernetes\elasticsearch\Run.sh" />
     <None Include="Kubernetes\elasticsearch\Stop.sh" />
     <None Include="Kubernetes\kibana\kibana-deployment.yaml" />
@@ -57,19 +73,15 @@
     <None Include="Kubernetes\mongodb\mongodb-service.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-deployment.yaml" />
     <None Include="Kubernetes\mongodb\mongodb-configmap.yaml" />
-    <None Include="Kubernetes\mongodb\mongodb-pv.yaml" />
+    <None Include="Kubernetes\README.md" />
     <None Include="Kubernetes\redis\redis-service.yaml" />
     <None Include="Kubernetes\redis\redis-deployment.yaml" />
     <None Include="Kubernetes\redis\redis-pvc.yaml" />
-    <None Include="Kubernetes\redis\redis-pv.yaml" />
     <None Include="Kubernetes\redis\Run.sh" />
     <None Include="Kubernetes\redis\Stop.sh" />
     <None Include="Kubernetes\RunKubernetes.sh" />
     <None Include="Kubernetes\StopKubernetes.sh" />
-    <None Include="RunDockerCompose.sh" />
-    <None Include="StopDockerCompose.sh" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Kubernetes\elasticsearch\data\" />
+    <None Include="Docker-Compose\RunDockerCompose.sh" />
+    <None Include="Docker-Compose\StopDockerCompose.sh" />
   </ItemGroup>
 </Project>

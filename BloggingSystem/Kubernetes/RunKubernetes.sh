@@ -1,32 +1,31 @@
 set -x
 
-kubectl apply -f ceph-mon-deployment.yaml
-kubectl apply -f ceph-mgr-deployment.yaml
+kubectl apply -f certs/bloggingsystem-certs.yaml
 
-source ./ceph/configure.sh
+cd ceph
+source Run.sh
+cd ..
 
-kubectl rollout restart deployment ceph-mon
-kubectl rollout restart deployment ceph-mgr
+cd elasticsearch
+source Run.sh
+cd ..
 
-kubectl apply -f ceph-osd-deployment.yaml
-kubectl apply -f ceph-rgw-deployment.yaml
+cd kibana
+source Run.sh
+cd ..
 
-# Exporting keys from dashboard.sh
-source ./ceph/dashboard.sh
+cd mongodb
+source Run.sh
+cd ..
 
-source ./elasticsearch/Run.sh
+cd redis
+source Run.sh
+cd ..
 
-# Wait for Elasticsearch pod to be ready
-until kubectl exec $(kubectl get pod -l app=elasticsearch -o jsonpath='{.items[0].metadata.name}') -- curl -s --cacert /usr/share/elasticsearch/config/bloggingsystem.crt https://localhost:9200 | grep -q "missing authentication credentials"; do
-  echo "Waiting for Elasticsearch..."
-  sleep 10
-done
-
-source ./elasticsearch/configure.sh
-
-source ./kibana/Run.sh
-#docker-compose up -d --build
+cd bloggingsystem
+source Run.sh
+cd ..
 
 set +x
 
-$SHELL
+#$SHELL

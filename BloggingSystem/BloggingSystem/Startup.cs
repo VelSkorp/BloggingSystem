@@ -33,7 +33,8 @@ namespace BloggingSystem
 				var cephSettings = serviceProvider.GetRequiredService<IOptions<CephSettings>>().Value;
 				var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
 				var useHttps = httpContextAccessor.HttpContext.Request.IsHttps;
-				return new ImageRepository(serviceProvider.GetRequiredService<IOptions<CephSettings>>(), useHttps);
+				var environment = Configuration["ASPNETCORE_ENVIRONMENT"];
+				return new ImageRepository(serviceProvider.GetRequiredService<IOptions<CephSettings>>(), environment, useHttps);
 			});
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

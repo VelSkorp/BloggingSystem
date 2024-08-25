@@ -1,8 +1,8 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 
 # Copy certificates and configuration file into the container
-COPY Docker/certs /usr/share/elasticsearch/config
-COPY Docker/elasticsearch/elasticsearch.yml /usr/share/elasticsearch/config
+COPY certs /usr/share/elasticsearch/config
+COPY elasticsearch/elasticsearch.yml /usr/share/elasticsearch/config
 
 # Create the Elasticsearch keystore and add secure settings
 RUN /usr/share/elasticsearch/bin/elasticsearch-keystore create
