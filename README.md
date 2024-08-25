@@ -38,9 +38,9 @@ The Blogging System is a modern web application for managing blog posts, built u
 - Docker Compose: Allows you to define and manage multi-container Docker applications, making it easier to set up and run the application stack.
 - Kubernetes: Manages containerized applications across a cluster of servers, providing automated deployment, scaling, and management of application containers. It ensures high availability and scalability of the application components.
 
-## [Docker-Compose](BloggingSystem/Docker-Compose/Readme.md) Installation
+## [Docker-Compose](BloggingSystem/Docker-Compose/README.md) Installation
 
-## [Kubernetes](BloggingSystem/Kubernetes/Readme.md) Installation
+## [Kubernetes](BloggingSystem/Kubernetes/README.md) Installation
 
 ## Contributing
 
