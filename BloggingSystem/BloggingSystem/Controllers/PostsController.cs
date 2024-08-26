@@ -29,18 +29,7 @@ namespace BloggingSystem
 				? await _postsRepository.GetAllPostsAsync()
 				: await _searchService.SearchPostsByAuthorAsync(author);
 
-			posts.ForEach(post =>
-			{
-				if (post.Images.All(image => image != null))
-				{
-					for (var i = 0; i < post.Images.Count; i++)
-					{
-						post.Images[i] = _imageRepository.GetImageUrl(post.Images[i]);
-					}
-				}
-			});
-
-			return View("Index", posts.Reverse<Post>());
+			return View("Index", posts.FillPostsWithImageLinks(_imageRepository));
 		}
 
 		public IActionResult Create()
@@ -62,21 +51,29 @@ namespace BloggingSystem
 		[HttpPost]
 		public async Task<IActionResult> CreateAsync(Post post, List<IFormFile> images)
 		{
-			post.CreatedAt = DateTime.Now;
-			post.Id = ObjectId.GenerateNewId(post.CreatedAt);
-			post.Author = User.FindFirst(ClaimTypes.Name)?.Value;
-
-			if (images is not null && images.Count > 0)
+			try
 			{
-				foreach (var image in images)
-				{
-					var imageUrl = await _imageRepository.UploadImageAsync(image);
-					post.Images.Add(imageUrl);
-				}
-			}
+				post.CreatedAt = DateTime.Now;
+				post.Id = ObjectId.GenerateNewId(post.CreatedAt);
+				post.Author = User.FindFirst(ClaimTypes.Name)?.Value;
 
-			await _postsRepository.CreateAsync(post);
-			return RedirectToAction("Index");
+				if (images is not null && images.Count > 0)
+				{
+					foreach (var image in images)
+					{
+						var imageUrl = await _imageRepository.UploadImageAsync(image);
+						post.Images.Add(imageUrl);
+					}
+				}
+
+				await _postsRepository.CreateAsync(post);
+				return RedirectToAction("Index");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to create the post");
+				return RedirectToAction("Error", "Posts");
+			}
 		}
 
 		[HttpPost]

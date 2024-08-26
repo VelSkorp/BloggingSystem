@@ -1,33 +1,25 @@
-﻿@model IEnumerable<BloggingSystemRepository.Post>
+﻿@model AuthorDetailsViewModel
 
 @{
 	ViewData["Title"] = "Posts";
 }
 
 <div class="container">
-	<h2 style="text-align: center;">Posts</h2>
 
-	<div class="d-flex justify-content-between mb-3">
-		<a class="btn btn-success mb-3" asp-controller="Posts" asp-action="Create">Create Post</a>
-
-		<form method="get" asp-action="Index">
-			<div class="input-group">
-				<input type="text" name="author" class="horizontal-input form-control" placeholder="Search by author" />
-				<div class="input-group-append">
-					<button type="submit" class="btn btn-primary">
-						<img src="/images/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-						Search
-					</button>
-				</div>
-			</div>
-		</form>
+	<div class="d-flex justify-content-between mb-3" style="text-align: center;">
+		<img src="@Model.Author.Photo" class="img-fluid" alt="Post Image" />
+		<div>
+			<h2>@Model.Author.FirstName</h2>
+			<h2>(@Model.Author.Username)</h2>
+			<h2>@Model.Author.LastName</h2>
+		</div>
 	</div>
 
-	@foreach (var post in Model)
+	@foreach (var post in Model.Posts)
 	{
 		<div class="card mb-3">
 			<div class="card-header">
-				<strong>@post.Title</strong> by <a asp-controller="Users" asp-action="AuthorDetails" asp-route-id="@post.Author">@post.Author</a> on @post.CreatedAt.ToString("MMMM dd, yyyy")
+				<strong>@post.Title</strong> by <a asp-controller="Posts" asp-action="AuthorDetails" name="@post.Author">@post.Author</a> on @post.CreatedAt.ToString("MMMM dd, yyyy")
 			</div>
 			<div class="card-body">
 				<p>@post.Content</p>

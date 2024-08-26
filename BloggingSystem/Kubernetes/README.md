@@ -56,3 +56,10 @@ Once the application is running, you can interact with the Blogging System throu
 - Open your browser and navigate to `https://localhost:30056` using SSL connection.
 - To access the Kibana dashboard inside the k8s network, use the address https://kibana-service:5601.
 - Use the username `elastic` and passwrod `development` to access the kibana.
+
+### Access the Elasticsearch API
+
+- Use `https://localhost:30092` Url on host machine or `https://elasticsearch:9200` Url inside k8s network.
+- Use the username `elastic` and passwrod `development` to access the `elastic` superuser.
+- Use the username `kibana_system` and passwrod `development` to access the `kibana_system` user used to connect kibana to elasticsearch.
+- It is also possible to access other elasticsearch built-in users by changing the user password in the `/elasticsearch/Run.sh` file using the `kubectl exec` command.

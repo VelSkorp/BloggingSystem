@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Amazon.SecurityToken.Model;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Security.Cryptography;
@@ -17,7 +18,7 @@ namespace BloggingSystemRepository
 
 		public async Task<User> AuthenticateUserAsync(LoginCredentials credentials)
 		{
-			var user = await _usersCollection.Find(u => u.Username == credentials.Username).FirstOrDefaultAsync();
+			var user = await _usersCollection.Find(u => u.Username.Equals(credentials.Username)).FirstOrDefaultAsync();
 			if (user is null || user.Password != HashPassword(credentials.Password))
 			{
 				throw new Exception("Invalid username or password");
@@ -45,6 +46,11 @@ namespace BloggingSystemRepository
 
 			await _usersCollection.InsertOneAsync(user);
 			return user;
+		}
+
+		public async Task<User> GetUserDetailsAsync(string username)
+		{
+			return await _usersCollection.Find(u => u.Username.Equals(username)).FirstOrDefaultAsync();
 		}
 
 		private string HashPassword(string password)
