@@ -27,7 +27,7 @@
 	{
 		<div class="card mb-3">
 			<div class="card-header">
-				<strong>@post.Title</strong> by <a asp-controller="Users" asp-action="AuthorDetails" asp-route-id="@post.Author">@post.Author</a> on @post.CreatedAt.ToString("MMMM dd, yyyy")
+				<strong>@post.Title</strong> by <a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="@post.Author">@post.Author</a> on @post.CreatedAt.ToString("MMMM dd, yyyy")
 			</div>
 			<div class="card-body">
 				<p>@post.Content</p>

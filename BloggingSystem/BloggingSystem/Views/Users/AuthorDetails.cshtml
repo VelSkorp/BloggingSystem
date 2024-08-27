@@ -6,8 +6,11 @@
 
 <div class="container">
 
-	<div class="d-flex justify-content-between mb-3" style="text-align: center;">
-		<img src="@Model.Author.Photo" class="img-fluid" alt="Post Image" />
+	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
+		@if (@Model.Author.Photo != null)
+		{
+			<img src="@Model.Author.Photo" class="img-fluid" alt="Profile Image" />
+		}
 		<div>
 			<h2>@Model.Author.FirstName</h2>
 			<h2>(@Model.Author.Username)</h2>
@@ -19,7 +22,7 @@
 	{
 		<div class="card mb-3">
 			<div class="card-header">
-				<strong>@post.Title</strong> by <a asp-controller="Posts" asp-action="AuthorDetails" name="@post.Author">@post.Author</a> on @post.CreatedAt.ToString("MMMM dd, yyyy")
+				<strong>@post.Title</strong> by @post.Author on @post.CreatedAt.ToString("MMMM dd, yyyy")
 			</div>
 			<div class="card-body">
 				<p>@post.Content</p>
