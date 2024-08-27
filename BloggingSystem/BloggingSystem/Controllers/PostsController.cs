@@ -77,6 +77,21 @@ namespace BloggingSystem
 		}
 
 		[HttpPost]
+		public async Task<IActionResult> DeleteAsync(Post post)
+		{
+			try
+			{
+				await _postsRepository.RemoveAsync(post);
+				return RedirectToAction("Index");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to create the post");
+				return RedirectToAction("Error", "Posts");
+			}
+		}
+
+		[HttpPost]
 		public async Task<IActionResult> AddCommentAsync(string postId, string commentContent)
 		{
 			try
@@ -99,7 +114,17 @@ namespace BloggingSystem
 
 				await _postsRepository.UpdateAsync(post);
 
-				return RedirectToAction("Index");
+				return Json(new
+				{
+					success = true,
+					comment = new
+					{
+						id = newComment.Id.ToString(),
+						author = newComment.Author,
+						content = newComment.Content,
+						createdAt = newComment.CreatedAt
+					}
+				});
 			}
 			catch (Exception ex)
 			{

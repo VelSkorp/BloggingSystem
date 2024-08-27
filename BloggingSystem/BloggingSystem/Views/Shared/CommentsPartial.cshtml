@@ -1,0 +1,25 @@
+﻿@model BloggingSystemRepository.Post
+
+<div class="card-footer">
+	@if (Model.Comments != null && Model.Comments.Any())
+	{
+		<h5>Comments:</h5>
+		<ul id="commentsContainer">
+			@foreach (var comment in Model.Comments)
+			{
+				<li>@comment.Content (@comment.Author on @comment.CreatedAt.ToString("MMMM dd, yyyy"))</li>
+			}
+		</ul>
+	}
+	<form id="commentForm" method="post" data-post-id="@Model.Id">
+		<div class="input-group">
+			<input type="text" id="commentContent" name="commentContent" class="horizontal-input form-control" placeholder="Add a comment..." required />
+			<div class="input-group-append">
+				<button type="submit" class="btn btn-primary">
+					<img src="/images/send-icon.png" alt="Send" style="width: 20px; height: 20px;" />
+					Send
+				</button>
+			</div>
+		</div>
+	</form>
+</div>

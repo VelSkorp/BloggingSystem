@@ -1,24 +1,33 @@
 html {
-  font-size: 14px;
+	font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-	font-size: 16px;
-  }
+	html {
+		font-size: 16px;
+	}
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+	box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+	margin-bottom: 60px;
+	padding-top: 60px;
+}
+
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1030;
 }
 
 .container .text {
@@ -52,4 +61,59 @@ form .horizontal-input {
 
 form .btn {
 	width: 100%;
+}
+
+.profile-container {
+	position: absolute;
+	top: 0px;
+	right: 20px;
+}
+
+.profile-icon {
+	width: 50px;
+	height: 50px;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.profile-icon img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	right: 0;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index: 1000;
+	border-radius: 5px;
+}
+
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+	border-bottom: 1px solid #ddd;
+}
+
+.dropdown-content a:last-child {
+	border-bottom: none;
+}
+
+.dropdown-content a:hover {
+	background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
 }

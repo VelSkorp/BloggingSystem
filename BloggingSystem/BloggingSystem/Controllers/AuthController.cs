@@ -42,6 +42,7 @@ namespace BloggingSystem
 				var claims = new List<Claim>
 				{
 					new Claim(ClaimTypes.Name, user.Username),
+					new Claim(ClaimTypes.UserData, user.Photo),
 				};
 
 				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
