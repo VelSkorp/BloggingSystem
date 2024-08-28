@@ -11,7 +11,7 @@
 
 		$.ajax({
 			type: 'POST',
-			url: 'Create',
+			url: '/Posts/Create',
 			data: formData,
 			contentType: false,
 			processData: false,
@@ -26,24 +26,42 @@
 		});
 	});
 
-	$('#commentForm').on('submit', function (event) {
+	$('.commentForm').on('submit', function (event) {
 		event.preventDefault();
-	
+
 		var postId = $(this).data('post-id');
-		var commentContent = $('#commentContent').val();
-	
+		var commentContent = $('#commentContent-' + postId).val();
+
 		$.ajax({
 			type: 'POST',
-			url: '@Url.Action("AddComment", "Posts")',
+			url: '/Posts/AddComment',
 			data: { postId: postId, commentContent: commentContent },
 			success: function (response) {
-				$('#commentsContainer').append(`
+				$('#commentsContainer-' + postId).append(`
 						<li>${response.comment.content} (${response.comment.author} on ${new Date(response.comment.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})</li>
 					`);
-				$('#commentContent').val('');
+				$('#commentContent-' + postId).val('');
 			},
 			error: function () {
 				alert('An error occurred while submitting the comment.');
+			}
+		});
+	});
+
+	$('.deletePost').on('click', function (event) {
+		event.preventDefault();
+	
+		var postId = $(this).data('post-id');
+	
+		$.ajax({
+			type: 'POST',
+			url: '/Posts/Delete',
+			data: { postId: postId },
+			success: function (response) {
+				$('#post-' + postId).remove();
+			},
+			error: function () {
+				alert('An error occurred while deleting the post.');
 			}
 		});
 	});

@@ -1,4 +1,4 @@
-﻿@model AuthorDetailsViewModel
+﻿@model UserDetailsViewModel
 
 @{
 	ViewData["Title"] = "Posts";
@@ -7,10 +7,7 @@
 <div class="container">
 
 	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
-		@if (@Model.Author.Photo != null)
-		{
-			<img src="@Model.Author.Photo" class="img-fluid" alt="Profile Image" />
-		}
+		<img src="@(Model.Author.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.Author.Photo)" class="profile-photo" alt="Profile Image" />
 		<div>
 			<h2>@Model.Author.FirstName</h2>
 			<h2>(@Model.Author.Username)</h2>
@@ -20,10 +17,12 @@
 
 	@foreach (var post in Model.Posts)
 	{
-		<div class="card mb-3">
-			<div class="card-header justify-content-between">
-				<strong>@post.Title</strong> by @post.Author on @post.CreatedAt.ToString("MMMM dd, yyyy")
-				<a class="btn btn-danger mb-3" asp-controller="Posts" asp-action="Delete" asp-route-post="@post">Delete Post</a>
+		<div class="card mb-3" id="post-@post.Id">
+			<div class="card-header d-flex justify-content-between">
+				<div>
+					<strong>@post.Title</strong> by @post.Author on @post.CreatedAt.ToString("MMMM dd, yyyy")
+				</div>
+				<button class="btn btn-danger mb-3 deletePost" data-post-id="@post.Id">Delete Post</button>
 			</div>
 			@Html.Partial("PostContentPartial", post)
 			@Html.Partial("CommentsPartial", post)

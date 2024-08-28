@@ -29,17 +29,35 @@ namespace BloggingSystem
 				return NotFound();
 			}
 
+			return View("AuthorDetails", await GetUserDetailsAsync(author));
+		}
+
+		public async Task<IActionResult> ProfileDetailsAsync(string author)
+		{
+			if (author is null)
+			{
+				return NotFound();
+			}
+
+			return View("ProfileDetails", await GetUserDetailsAsync(author));
+		}
+
+		private async Task<UserDetailsViewModel> GetUserDetailsAsync(string author)
+		{
+
 			var posts = await _searchService.SearchPostsByAuthorAsync(author);
 			var user = await _userRepository.GetUserDetailsAsync(author);
-			user.Photo = _imageRepository.GetImageUrl(user.Photo);
 
-			var authorDetails = new AuthorDetailsViewModel()
+			if (user.Photo is not null)
+			{
+				user.Photo = _imageRepository.GetImageUrl(user.Photo);
+			}
+
+			return new UserDetailsViewModel()
 			{
 				Posts = posts.FillPostsWithImageLinks(_imageRepository),
 				Author = user
 			};
-
-			return View("AuthorDetails", authorDetails);
 		}
 	}
 }

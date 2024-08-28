@@ -38,6 +38,9 @@
     <Content Update="wwwroot\images\favicon.ico">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\images\profile-icon.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\images\search-icon.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Content>

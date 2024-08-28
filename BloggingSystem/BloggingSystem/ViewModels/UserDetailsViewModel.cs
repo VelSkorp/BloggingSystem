@@ -2,7 +2,7 @@
 
 namespace BloggingSystem
 {
-    public class AuthorDetailsViewModel
+    public class UserDetailsViewModel
     {
         public User Author { get; set; }
         public IEnumerable<Post> Posts { get; set; }

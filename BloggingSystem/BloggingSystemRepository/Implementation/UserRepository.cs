@@ -1,5 +1,4 @@
-﻿using Amazon.SecurityToken.Model;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Security.Cryptography;

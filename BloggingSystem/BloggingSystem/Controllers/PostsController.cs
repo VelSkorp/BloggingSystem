@@ -77,16 +77,20 @@ namespace BloggingSystem
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> DeleteAsync(Post post)
+		public async Task<IActionResult> DeleteAsync(string postId)
 		{
 			try
 			{
-				await _postsRepository.RemoveAsync(post);
-				return RedirectToAction("Index");
+				await _postsRepository.RemoveAsync(ObjectId.Parse(postId));
+
+				return Json(new
+				{
+					success = true
+				});
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to create the post");
+				_logger.LogError(ex, "Failed to delete the post");
 				return RedirectToAction("Error", "Posts");
 			}
 		}

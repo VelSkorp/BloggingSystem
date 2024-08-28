@@ -9,11 +9,13 @@ namespace BloggingSystem
 	public class AuthController : Controller
 	{
 		private readonly IUserRepository _userRepository;
+		private readonly IImageRepository _imageRepository;
 		private readonly ILogger<AuthController> _logger;
 
-		public AuthController(IUserRepository userRepository, ILogger<AuthController> logger)
+		public AuthController(IUserRepository userRepository, IImageRepository imageRepository, ILogger<AuthController> logger)
 		{
 			_userRepository = userRepository;
+			_imageRepository = imageRepository;
 			_logger = logger;
 		}
 
@@ -42,7 +44,7 @@ namespace BloggingSystem
 				var claims = new List<Claim>
 				{
 					new Claim(ClaimTypes.Name, user.Username),
-					new Claim(ClaimTypes.UserData, user.Photo),
+					new Claim(ClaimTypes.UserData, user.Photo is null ? Url.Content("~/images/profile-icon.png") : _imageRepository.GetImageUrl(user.Photo)),
 				};
 
 				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
