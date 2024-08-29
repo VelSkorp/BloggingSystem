@@ -1,6 +1,7 @@
 using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace BloggingSystem
 {
@@ -42,6 +43,30 @@ namespace BloggingSystem
 			return View("ProfileDetails", await GetUserDetailsAsync(author));
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> UpdateUserAsync(User user)
+		{
+			if (user is null)
+			{
+				return Json(new { success = false, message = "User data is null" });
+			}
+
+			try
+			{
+				await _userRepository.UpdateUserDetailsAsync(user);
+
+				return Json(new
+				{
+					success = true
+				});
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to delete the post");
+				return RedirectToAction("Error", "Posts");
+			}
+		}
+
 		private async Task<UserDetailsViewModel> GetUserDetailsAsync(string author)
 		{
 
@@ -56,7 +81,7 @@ namespace BloggingSystem
 			return new UserDetailsViewModel()
 			{
 				Posts = posts.FillPostsWithImageLinkAndSort(_imageRepository),
-				Author = user
+				User = user
 			};
 		}
 	}

@@ -7,11 +7,11 @@
 <div class="container">
 
 	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
-		<img src="@(Model.Author.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.Author.Photo)" class="profile-photo" alt="Profile Image" />
+		<img src="@(Model.User.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.User.Photo)" class="profile-photo" alt="Profile Image" />
 		<div>
-			<h2>@Model.Author.FirstName</h2>
-			<h2>(@Model.Author.Username)</h2>
-			<h2>@Model.Author.LastName</h2>
+			<h2>@Model.User.FirstName</h2>
+			<h2>(@Model.User.Username)</h2>
+			<h2>@Model.User.LastName</h2>
 		</div>
 	</div>
 

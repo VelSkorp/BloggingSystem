@@ -63,7 +63,7 @@ form .btn {
 	width: 100%;
 }
 
-.profile-container {
+.profile-icon-container {
 	position: absolute;
 	top: 0px;
 	right: 20px;
@@ -75,6 +75,11 @@ form .btn {
 	overflow: hidden;
 	cursor: pointer;
 	align-self: center;
+	border-radius: 50%;
+}
+
+.profile-photo-container:hover .upload-overlay {
+	opacity: 1;
 }
 
 .profile-icon {
@@ -124,4 +129,51 @@ form .btn {
 
 .dropdown:hover .dropdown-content {
 	display: block;
+}
+
+.upload-overlay {
+	position: relative;
+	top: -100px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	border-radius: 50%;
+}
+
+.camera-icon {
+	font-size: 50px;
+	height: 100px;
+	width: 100px;
+	color: white;
+	cursor: pointer;
+}
+
+.hidden {
+	display: none;
+}
+
+.editable-text:hover .edit-icon {
+	opacity: 1;
+}
+
+.edit-icon {
+	cursor: pointer;
+	display: flex;
+	opacity: 0;
+	margin-left: 10px;
+	color: #007bff;
+	font-size: 18px;
+}
+
+.editable-text input {
+	font-size: 1.7em;
+	font-weight: bold;
+	line-height: 1px;
+	border: 1px solid #ccc;
+	padding: 0px;
+	margin: 2px;
+	width: 150px;
 }
