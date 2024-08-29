@@ -29,7 +29,7 @@ namespace BloggingSystem
 				? await _postsRepository.GetAllPostsAsync()
 				: await _searchService.SearchPostsByAuthorAsync(author);
 
-			return View("Index", posts.FillPostsWithImageLinks(_imageRepository));
+			return View("Index", posts.FillPostsWithImageLinkAndSort(_imageRepository));
 		}
 
 		public IActionResult Create()

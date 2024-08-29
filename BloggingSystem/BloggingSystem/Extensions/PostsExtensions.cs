@@ -4,7 +4,7 @@ namespace BloggingSystem
 {
 	public static class PostsExtensions
 	{
-		public static IEnumerable<Post> FillPostsWithImageLinks(this List<Post> posts, IImageRepository imageRepository)
+		public static IEnumerable<Post> FillPostsWithImageLinkAndSort(this List<Post> posts, IImageRepository imageRepository)
 		{
 			posts.ForEach(post =>
 			{
@@ -17,8 +17,7 @@ namespace BloggingSystem
 				}
 			});
 
-			return posts.Reverse<Post>();
-
+			return posts.OrderByDescending(post => post.CreatedAt);
 		}
 	}
 }

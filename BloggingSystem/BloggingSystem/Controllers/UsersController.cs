@@ -55,7 +55,7 @@ namespace BloggingSystem
 
 			return new UserDetailsViewModel()
 			{
-				Posts = posts.FillPostsWithImageLinks(_imageRepository),
+				Posts = posts.FillPostsWithImageLinkAndSort(_imageRepository),
 				Author = user
 			};
 		}

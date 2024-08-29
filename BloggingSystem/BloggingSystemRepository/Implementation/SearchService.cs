@@ -1,5 +1,6 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 
 namespace BloggingSystemRepository
 {
@@ -26,7 +27,11 @@ namespace BloggingSystemRepository
 				)
 			);
 
-			return searchResponse.Documents.ToList();
+			return searchResponse.Hits.Select(h =>
+			{
+				h.Source.Id = ObjectId.Parse(h.Id);
+				return h.Source;
+			}).ToList();
 		}
 	}
 }
