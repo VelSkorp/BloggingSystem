@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,7 +18,7 @@ namespace BloggingSystemRepository
 
 		public async Task<User> AuthenticateUserAsync(LoginCredentials credentials)
 		{
-			var user = await _usersCollection.Find(u => u.Username == credentials.Username).FirstOrDefaultAsync();
+			var user = await _usersCollection.Find(u => u.Username.Equals(credentials.Username)).FirstOrDefaultAsync();
 			if (user is null || user.Password != HashPassword(credentials.Password))
 			{
 				throw new Exception("Invalid username or password");
@@ -45,6 +46,18 @@ namespace BloggingSystemRepository
 
 			await _usersCollection.InsertOneAsync(user);
 			return user;
+		}
+
+		public async Task<User> GetUserDetailsAsync(string username)
+		{
+			return await _usersCollection.Find(u => u.Username.Equals(username)).FirstOrDefaultAsync();
+		}
+
+		public async Task UpdateUserDetailsAsync<TField>(Expression<Func<User, TField>> field, TField value, string username)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+			var update = Builders<User>.Update.Set(field, value);
+			await _usersCollection.UpdateOneAsync(filter, update);
 		}
 
 		private string HashPassword(string password)

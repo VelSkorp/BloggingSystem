@@ -11,7 +11,7 @@ namespace BloggingSystemRepository
 		public string Username { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public object Photo { get; set; }
+		public string Photo { get; set; }
 		public string Password { get; set; }
 	}
 }

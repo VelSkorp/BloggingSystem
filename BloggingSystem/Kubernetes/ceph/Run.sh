@@ -2,7 +2,7 @@ set -x
 
 kubectl apply -f ceph-pvc.yaml
 kubectl apply -f ceph-configmap.yaml
-kubectl apply -f ceph-mon-deployment.yaml
+kubectl apply -f ceph-mon-statefulset.yaml
 
 until kubectl get pods -l app=ceph-mon -o jsonpath="{.items[0].status.containerStatuses[0].ready}" | grep -q true; do
   echo "Waiting for ceph-mon to be ready..."

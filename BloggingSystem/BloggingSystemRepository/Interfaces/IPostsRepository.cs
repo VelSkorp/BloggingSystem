@@ -8,6 +8,6 @@ namespace BloggingSystemRepository
 		Task<Post?> GetPostByIdAsync(ObjectId id);
 		Task CreateAsync(Post newPost);
 		Task UpdateAsync(Post updatedPost);
-		Task RemoveAsync(Post post);
+		Task RemoveAsync(ObjectId id);
 	}
 }

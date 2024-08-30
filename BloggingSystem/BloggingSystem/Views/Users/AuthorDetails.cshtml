@@ -1,0 +1,28 @@
+﻿@model UserDetailsViewModel
+
+@{
+	ViewData["Title"] = "Posts";
+}
+
+<div class="container">
+
+	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
+		<img src="@(Model.User.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.User.Photo)" class="profile-photo" alt="Profile Image" />
+		<div>
+			<h2>@Model.User.FirstName</h2>
+			<h2>(@Model.User.Username)</h2>
+			<h2>@Model.User.LastName</h2>
+		</div>
+	</div>
+
+	@foreach (var post in Model.Posts)
+	{
+		<div class="card mb-3">
+			<div class="card-header">
+				<strong>@post.Title</strong> by @post.Author on @post.CreatedAt.ToString("MMMM dd, yyyy")
+			</div>
+			@Html.Partial("PostContentPartial", post)
+			@Html.Partial("CommentsPartial", post)
+		</div>
+	}
+</div>

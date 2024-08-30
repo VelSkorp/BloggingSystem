@@ -1,0 +1,16 @@
+﻿@model BloggingSystemRepository.Post
+
+<div class="card-body">
+	<p>@Model.Content</p>
+	@if (Model.Images != null && Model.Images.All(image => image != null))
+	{
+		<div class="row">
+			@foreach (var imageUrl in Model.Images)
+			{
+				<div class="col-md-3">
+					<img src="@imageUrl" class="img-fluid" alt="Post Image" />
+				</div>
+			}
+		</div>
+	}
+</div>

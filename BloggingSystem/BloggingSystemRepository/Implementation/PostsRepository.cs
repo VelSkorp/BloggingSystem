@@ -35,11 +35,17 @@ namespace BloggingSystemRepository
 		public async Task UpdateAsync(Post updatedPost)
 		{
 			await _postsCollection.ReplaceOneAsync(x => x.Id == updatedPost.Id, updatedPost);
+			await _elasticClient.UpdateAsync(new UpdateRequest<Post, Post>(index: "posts", id: new Id(updatedPost.Id.ToString()))
+			{
+				Doc = updatedPost
+			});
 		}
 
-		public async Task RemoveAsync(Post post)
+		public async Task RemoveAsync(ObjectId id)
 		{
-			await _postsCollection.DeleteOneAsync(x => x.Id == post.Id);
+			var post = await GetPostByIdAsync(id);
+			await _postsCollection.DeleteOneAsync(x => x.Id == id);
+			await _elasticClient.DeleteAsync(post);
 		}
 	}
 }

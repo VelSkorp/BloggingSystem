@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: elasticsearch
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: elasticsearch
   ports:
-  - protocol: TCP
-    port: 9200
-    targetPort: 9200
+    - protocol: TCP
+      port: 9200
+      targetPort: 9200
+      nodePort: 30092

@@ -1,0 +1,49 @@
+﻿@model UserDetailsViewModel
+
+@{
+	ViewData["Title"] = "Posts";
+}
+
+<div class="container">
+
+	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
+		<form id="updateUserForm" class="d-flex justify-content-center" method="post" enctype="multipart/form-data">
+			<div class="profile-photo-container">
+				<img src="@(Model.User.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.User.Photo)" class="profile-photo" alt="Profile Image" />
+				<div class="upload-overlay">
+					<input class="hidden" type="file" id="photoInput" name="photo" accept="image/*" />
+					<span class="camera-icon">&#128247;</span>
+				</div>
+			</div>
+			<div>
+				<div class="d-flex justify-content-center editable-text" id="firstNameField">
+					<h2 id="firstNameText">@Model.User.FirstName</h2>
+					<input type="text" class="hidden" id="editFirstName" placeholder="First Name" name="firstName" />
+					<span class="edit-icon" onclick="editField('firstName')">&#9998;</span>
+				</div>
+				<h2 id="usernameText">(@Model.User.Username)</h2>
+				<div class="d-flex justify-content-center editable-text" id="lastNameField">
+					<h2 id="lastNameText">@Model.User.LastName</h2>
+					<input type="text" class="hidden" id="editLastName" placeholder="Last Name" name="lastName" />
+					<span class="edit-icon" onclick="editField('lastName')">&#9998;</span>
+				</div>
+			</div>
+			<button type="submit" id="submitButton" class="hidden" />
+		</form>
+	</div>
+
+	@foreach (var post in Model.Posts)
+	{
+		<div class="card mb-3" id="post-@post.Id">
+			<div class="card-header d-flex justify-content-between">
+				<div>
+					<strong>@post.Title</strong> by @post.Author on @post.CreatedAt.ToString("MMMM dd, yyyy")
+				</div>
+				<button class="btn btn-danger mb-3 deletePost" data-post-id="@post.Id">Delete Post</button>
+			</div>
+
+			@Html.Partial("PostContentPartial", post)
+			@Html.Partial("CommentsPartial", post)
+		</div>
+	}
+</div>

@@ -54,4 +54,4 @@ Once the application is running, you can interact with the Blogging System throu
 - Use `https://localhost:9200` Url on host machine or `https://elasticsearch:9200` Url inside docker containers in a default docker-compose network.
 - Use the username `elastic` and passwrod `development` to access the `elastic` superuser.
 - Use the username `kibana_system` and passwrod `development` to access the `kibana_system` user used to connect kibana to elasticsearch.
-- It is also possible to access other elasticsearch built-in users by changing the user password in the `/Docker/elasticsearch/configure.sh` file using the `docker-compose exec` command.
+- It is also possible to access other elasticsearch built-in users by changing the user password in the `elasticsearch/configure.sh` file using the `docker-compose exec` command.
