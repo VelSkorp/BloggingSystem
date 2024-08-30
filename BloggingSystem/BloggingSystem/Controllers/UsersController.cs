@@ -1,7 +1,7 @@
 using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+using System.Security.Claims;
 
 namespace BloggingSystem
 {
@@ -44,20 +44,33 @@ namespace BloggingSystem
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> UpdateUserAsync(User user)
+		public async Task<IActionResult> UpdateUserAsync(string firstName, string lastName, IFormFile photo)
 		{
-			if (user is null)
-			{
-				return Json(new { success = false, message = "User data is null" });
-			}
-
 			try
 			{
-				await _userRepository.UpdateUserDetailsAsync(user);
+				string photoUrl = null;
+
+				if (photo is not null)
+				{
+					photoUrl = await _imageRepository.UploadImageAsync(photo);
+					await _userRepository.UpdateUserDetailsAsync(u => u.Photo, photoUrl, User.FindFirst(ClaimTypes.Name)?.Value);
+					photoUrl = _imageRepository.GetImageUrl(photoUrl);
+				}
+				if (firstName is not null)
+				{
+					await _userRepository.UpdateUserDetailsAsync(u => u.FirstName, firstName, User.FindFirst(ClaimTypes.Name)?.Value);
+				}
+				if (lastName is not null)
+				{
+					await _userRepository.UpdateUserDetailsAsync(u => u.LastName, lastName, User.FindFirst(ClaimTypes.Name)?.Value);
+				}
 
 				return Json(new
 				{
-					success = true
+					success = true,
+					photo = photoUrl,
+					firstName,
+					lastName
 				});
 			}
 			catch (Exception ex)
@@ -69,7 +82,6 @@ namespace BloggingSystem
 
 		private async Task<UserDetailsViewModel> GetUserDetailsAsync(string author)
 		{
-
 			var posts = await _searchService.SearchPostsByAuthorAsync(author);
 			var user = await _userRepository.GetUserDetailsAsync(author);
 

@@ -27,8 +27,12 @@
 	});
 
 	// Add click event to the camera icon to trigger file input
-	document.querySelector('.camera-icon').addEventListener('click', function () {
-		document.getElementById('photoInput').click();
+	$('.camera-icon').on('click', function () {
+		$('#photoInput').click();
+	});
+
+	$('#photoInput').on('change', function () {
+		$('#updateUserForm').submit();
 	});
 
 	$('#updateUserForm').on('submit', function (event) {
@@ -43,14 +47,22 @@
 			contentType: false,
 			processData: false,
 			success: function (response) {
-				// Update the displayed fields
-				document.getElementById('firstNameText').innerText = updatedData.firstName;
-				document.getElementById('usernameText').innerText = `(${updatedData.username})`;
-				document.getElementById('lastNameText').innerText = updatedData.lastName;
+				// Update the displayed fields only if the response fields are not null
+				if (response.photo !== null) {
+					document.querySelector('.profile-photo').src = response.photo;
+					document.querySelector('.profile-icon img').src = response.photo;
+				}
+				if (response.firstName !== null) {
+					document.getElementById('firstNameText').innerText = response.firstName;
+				}
+				if (response.lastName !== null) {
+					document.getElementById('lastNameText').innerText = response.lastName;
+				}
 				// Hide the edit fields after saving
 				document.getElementById('editFirstName').style.display = 'none';
-				document.getElementById('editUsername').style.display = 'none';
+				document.getElementById('firstNameText').style.display = 'block';
 				document.getElementById('editLastName').style.display = 'none';
+				document.getElementById('lastNameText').style.display = 'block';
 			},
 			error: function (error) {
 				alert('An error occurred while updating user details.');
@@ -99,42 +111,12 @@
 	});
 });
 
-function uploadImage() {
-	var fileInput = document.getElementById('fileInput');
-	var file = fileInput.files[0];
-
-	if (file) {
-		var formData = new FormData();
-		formData.append('photo', file);
-
-		// Send an AJAX request to upload the photo
-		$.ajax({
-			type: 'POST',
-			url: '/YourController/UploadPhoto', // Adjust to your endpoint
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (response) {
-				// Update the profile photo with the new image
-				document.querySelector('.profile-photo').src = response.newImageUrl; // Ensure your response returns the new image URL
-			},
-			error: function () {
-				alert('An error occurred while uploading the image.');
-			}
-		});
-	}
-}
-
 function editField(field) {
 	// Show the editing fields
 	if (field === 'firstName') {
 		document.getElementById('editFirstName').style.display = 'block';
 		document.getElementById('firstNameText').style.display = 'none';
 		document.getElementById('editFirstName').value = document.getElementById('firstNameText').innerText;
-	} else if (field === 'username') {
-		document.getElementById('editUsername').style.display = 'block';
-		document.getElementById('usernameText').style.display = 'none';
-		document.getElementById('editUsername').value = document.getElementById('usernameText').innerText.replace(/[()]/g, '').trim();
 	} else if (field === 'lastName') {
 		document.getElementById('editLastName').style.display = 'block';
 		document.getElementById('lastNameText').style.display = 'none';

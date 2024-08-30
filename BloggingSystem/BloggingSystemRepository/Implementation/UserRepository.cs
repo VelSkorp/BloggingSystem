@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
-using static MongoDB.Driver.WriteConcern;
 
 namespace BloggingSystemRepository
 {
@@ -53,14 +53,10 @@ namespace BloggingSystemRepository
 			return await _usersCollection.Find(u => u.Username.Equals(username)).FirstOrDefaultAsync();
 		}
 
-		public async Task UpdateUserDetailsAsync(User user)
+		public async Task UpdateUserDetailsAsync<TField>(Expression<Func<User, TField>> field, TField value, string username)
 		{
-			var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
-			var update = Builders<User>.Update
-				.Set(u => u.FirstName, user.FirstName)
-				.Set(u => u.Username, user.Username)
-				.Set(u => u.LastName, user.LastName)
-				.Set(u => u.Photo, user.Photo);
+			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+			var update = Builders<User>.Update.Set(field, value);
 			await _usersCollection.UpdateOneAsync(filter, update);
 		}
 
