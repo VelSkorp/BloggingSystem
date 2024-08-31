@@ -60,6 +60,20 @@ namespace BloggingSystemRepository
 			await _usersCollection.UpdateOneAsync(filter, update);
 		}
 
+		public async Task AddToUserCollectionAsync<TField>(Expression<Func<User, IEnumerable<TField>>> field, TField value, string username)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+			var update = Builders<User>.Update.AddToSet(field, value);
+			await _usersCollection.UpdateOneAsync(filter, update);
+		}
+
+		public async Task RemoveFromUserCollectionAsync<TField>(Expression<Func<User, IEnumerable<TField>>> field, TField value, string username)
+		{
+			var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+			var update = Builders<User>.Update.Pull(field, value);
+			await _usersCollection.UpdateOneAsync(filter, update);
+		}
+
 		private string HashPassword(string password)
 		{
 			using (var sha256 = SHA256.Create())
