@@ -5,8 +5,10 @@ The Blogging System is a modern web application for managing blog posts, built u
 ## Features
 
 - User Authentication & Authorization: Secure login and registration for users.
-- Create/Edit/Delete Blog Posts: Full CRUD (Create, Read, Update, Delete) functionality for blog posts.
+- Create/Delete Blog Posts: Full CRUD (Create, Read, Update, Delete) functionality for blog posts.
 - View Blog Posts: Display all blog posts, with options to search by author.
+- View Author profile: Display all blog posts, with author info.
+- View User profile: Display all blog posts, with user info and CRUD operations on posts.
 - Commenting System: Users can leave comments on blog posts.
 - Search Functionality: Fast and efficient search capabilities for blog posts using Elasticsearch.
 - Analytics & Monitoring: Real-time monitoring and visualization of application data with Kibana.
@@ -26,6 +28,12 @@ The Blogging System is a modern web application for managing blog posts, built u
 
 ### Create post page
 ![CreatePostPage](Screenshots/CreatePostPage.png)
+
+### Author page
+![AuthorPage](Screenshots/AuthorPage.png)
+
+### Profile page
+![ProfilePage](Screenshots/ProfilePage.png)
 
 ## Technologies Used
 

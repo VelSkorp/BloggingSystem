@@ -40,18 +40,7 @@ namespace BloggingSystem
 			try
 			{
 				var user = await _userRepository.AuthenticateUserAsync(credentials);
-
-				var claims = new List<Claim>
-				{
-					new Claim(ClaimTypes.Name, user.Username),
-					new Claim(ClaimTypes.UserData, user.Photo is null ? Url.Content("~/images/profile-icon.png") : _imageRepository.GetImageUrl(user.Photo)),
-				};
-
-				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-					new ClaimsPrincipal(claimsIdentity));
-
+				await SaveUserCookieAsync(user);
 				return RedirectToAction("Index", "Posts");
 			}
 			catch (Exception ex)
@@ -69,7 +58,8 @@ namespace BloggingSystem
 			try
 			{
 				var user = await _userRepository.RegisterUserAsync(credentials);
-				return RedirectToAction("Login", "Auth");
+				await SaveUserCookieAsync(user);
+				return RedirectToAction("Index", "Posts");
 			}
 			catch (Exception ex)
 			{
@@ -82,6 +72,20 @@ namespace BloggingSystem
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			return RedirectToAction("Login", "Auth");
+		}
+
+		private async Task SaveUserCookieAsync(User user)
+		{
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Name, user.Username),
+				new Claim(ClaimTypes.UserData, user.Photo is null ? Url.Content("~/images/profile-icon.png") : _imageRepository.GetImageUrl(user.Photo)),
+			};
+
+			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+				new ClaimsPrincipal(claimsIdentity));
 		}
 	}
 }

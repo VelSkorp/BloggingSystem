@@ -78,6 +78,10 @@ form .btn {
 	border-radius: 50%;
 }
 
+.profile-photo-container {
+	height: 100px;
+}
+
 .profile-photo-container:hover .upload-overlay {
 	opacity: 1;
 }

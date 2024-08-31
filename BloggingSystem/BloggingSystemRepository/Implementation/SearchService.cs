@@ -21,7 +21,7 @@ namespace BloggingSystemRepository
 				.Index(_elasticsearchSettings.Index)
 				.Query(query => query
 					.Term(term => term
-						.Field(field => field.Author)
+						.Field(field => field.Author.ToLower())
 						.Value(author)
 					)
 				)
