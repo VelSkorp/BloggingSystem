@@ -8,7 +8,7 @@ namespace BloggingSystem
 		{
 			foreach (var subscription in subscriptions)
 			{
-				subscription.Photo = subscription.Photo is null ? "~/images/profile-icon.png" : imageRepository.GetImageUrl(subscription.Photo);
+				subscription.Photo = subscription.Photo is null ? "/images/profile-icon.png" : imageRepository.GetImageUrl(subscription.Photo);
 			}
 
 			return subscriptions;

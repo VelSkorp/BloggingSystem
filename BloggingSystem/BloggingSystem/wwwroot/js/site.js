@@ -124,13 +124,12 @@
 			success: function (response) {
 				button.innerText = isSubscribed ? 'Subscribe' : 'Unsubscribe';
 				if (!isSubscribed) {
-					var photoUrl = response.subscription.Photo || '@Url.Content("~/images/profile-icon.png")';
 					$('#subscriptionContainer')
 						.append(`
-						<li id="subscription-${response.subscription.Username}" class="d-flex justify-content-center align-items-center">
-							<a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="${response.subscription.Username}">
-								<img src="${photoUrl}" class="subscription-icon" alt="subscription" />
-								${response.subscription.Username}
+						<li id="subscription-${response.subscription.username}" class="d-flex justify-content-center align-items-center">
+							<a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="${response.subscription.username}">
+								<img src="${response.subscription.photo}" class="subscription-icon" alt="subscription" />
+								${response.subscription.username}
 							</a>
 						</li>
 						`);
