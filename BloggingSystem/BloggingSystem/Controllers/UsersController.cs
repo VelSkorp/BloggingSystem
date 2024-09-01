@@ -5,17 +5,16 @@ using System.Security.Claims;
 namespace BloggingSystem
 {
 	[Authorize]
-	public class UsersController : Controller
+	public class UsersController : BaseController
 	{
 		private readonly ILogger<UsersController> _logger;
 		private readonly UserManager _userManager;
-		private readonly SubscribeManager _subscribeManager;
 
 		public UsersController(ILogger<UsersController> logger, UserManager userManager, SubscribeManager subscribeManager)
+			: base(subscribeManager)
 		{
 			_logger = logger;
 			_userManager = userManager;
-			_subscribeManager = subscribeManager;
 		}
 
 		public async Task<IActionResult> AuthorDetailsAsync(string author)
@@ -24,6 +23,12 @@ namespace BloggingSystem
 			{
 				return NotFound();
 			}
+
+			var username = User.FindFirst(ClaimTypes.Name)?.Value;
+			var subscriptions = await _subscribeManager.GetSubscriptionsAsync(username);
+
+			ViewBag.Subscriptions = subscriptions;
+			ViewBag.IsSubscribed = subscriptions.FirstOrDefault(sub => sub.Username.Equals(author)) is not null;
 
 			return View("AuthorDetails", await _userManager.GetUserDetailsAsync(author));
 		}
@@ -34,6 +39,8 @@ namespace BloggingSystem
 			{
 				return NotFound();
 			}
+
+			await FillSubscriptionsAsync();
 
 			return View("ProfileDetails", await _userManager.GetUserDetailsAsync(author));
 		}
@@ -62,17 +69,25 @@ namespace BloggingSystem
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> SubscribeAsync(string author, string subscriber)
+		public async Task<IActionResult> ToggleSubscriptionAsync(bool isSubscribed, string author)
 		{
-			await _subscribeManager.SubscribeAsync(author, subscriber);
-			return Ok();
-		}
+			var subscriber = User.FindFirst(ClaimTypes.Name)?.Value;
 
-		[HttpPost]
-		public async Task<IActionResult> UnsubscribeAsync(string author, string subscriber)
-		{
-			await _subscribeManager.UnsubscribeAsync(author, subscriber);
-			return Ok();
+			if (isSubscribed)
+			{
+				await _subscribeManager.UnsubscribeAsync(author, subscriber);
+
+				return Json(new
+				{
+					success = true
+				});
+			}
+
+			return Json(new
+			{
+				success = true,
+				subscription = await _subscribeManager.SubscribeAsync(author, subscriber)
+			});
 		}
 
 		[HttpPost]

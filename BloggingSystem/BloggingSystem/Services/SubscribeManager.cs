@@ -1,77 +1,110 @@
 ﻿using BloggingSystemRepository;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace BloggingSystem
 {
-	public sealed class SubscribeManager
-	{
-		private readonly IUserRepository _userRepository;
-		private readonly ILogger<SubscribeManager> _logger;
+    public sealed class SubscribeManager
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IImageRepository _imageRepository;
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<SubscribeManager> _logger;
 
-		public SubscribeManager(ILogger<SubscribeManager> logger, IUserRepository userRepository)
-		{
-			_logger = logger;
-			_userRepository = userRepository;
-		}
+        public SubscribeManager(ILogger<SubscribeManager> logger, IUserRepository userRepository, IImageRepository imageRepository, IDistributedCache cache)
+        {
+            _logger = logger;
+            _userRepository = userRepository;
+            _imageRepository = imageRepository;
+            _cache = cache;
+        }
 
-		public async Task SubscribeAsync(string author, string subriber)
-		{
-			var authorInfo = await _userRepository.GetUserDetailsAsync(author);
-			var subriberInfo = await _userRepository.GetUserDetailsAsync(subriber);
+        public async Task<HashSet<UserFollowInfo>> GetSubscriptionsAsync(string username)
+        {
+            var cacheKey = $"subscriptions_{username}";
+            var cachedData = await _cache.GetStringAsync(cacheKey);
 
-			await _userRepository.AddToUserCollectionAsync(u => u.Followers, new UserFollowInfo
-			{
-				Username = subriberInfo.Username,
-				Photo = subriberInfo.Photo
-			}, author);
+            if (cachedData is not null)
+            {
+                return JsonConvert.DeserializeObject<HashSet<UserFollowInfo>>(cachedData);
+            }
 
-			await _userRepository.AddToUserCollectionAsync(u => u.Following, new UserFollowInfo
-			{
-				Username = authorInfo.Username,
-				Photo = authorInfo.Photo
-			}, subriber);
-		}
+            var user = await _userRepository.GetUserDetailsAsync(username);
 
-		public async Task UnsubscribeAsync(string author, string subriber)
-		{
-			var authorInfo = await _userRepository.GetUserDetailsAsync(author);
-			var subriberInfo = await _userRepository.GetUserDetailsAsync(subriber);
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(user.Following.FillSubscriptionsWithImageLinks(_imageRepository)),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                });
 
-			await _userRepository.RemoveFromUserCollectionAsync(u => u.Followers, new UserFollowInfo
-			{
-				Username = subriberInfo.Username,
-				Photo = subriberInfo.Photo
-			}, author);
+            return user.Following;
+        }
 
-			await _userRepository.RemoveFromUserCollectionAsync(u => u.Following, new UserFollowInfo
-			{
-				Username = authorInfo.Username,
-				Photo = authorInfo.Photo
-			}, subriber);
-		}
+        public async Task<UserFollowInfo> SubscribeAsync(string author, string subriber)
+        {
+            var authorInfo = await _userRepository.GetUserDetailsAsync(author);
+            var subriberInfo = await _userRepository.GetUserDetailsAsync(subriber);
 
-		public void Notify(string author, string notification)
-		{
-			Task.Run(async () =>
-			{
-				try
-				{
-					var authorInfo = await _userRepository.GetUserDetailsAsync(author);
+            await _userRepository.AddToUserCollectionAsync(u => u.Followers, new UserFollowInfo
+            {
+                Username = subriberInfo.Username,
+                Photo = subriberInfo.Photo
+            }, author);
 
-					foreach (var follower in authorInfo.Followers)
-					{
-						await _userRepository.AddToUserCollectionAsync(u => u.Notifications, notification, follower.Username);
-					}
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError(ex, $"Failed to notify followers of {author}.", author);
-				}
-			});
-		}
+            var subscription = new UserFollowInfo
+            {
+                Username = authorInfo.Username,
+                Photo = authorInfo.Photo
+            };
 
-		public async Task RemoveNotificationAsync(string subriber, string notification)
-		{
-			await _userRepository.RemoveFromUserCollectionAsync(u => u.Notifications, notification, subriber);
-		}
-	}
+            await _userRepository.AddToUserCollectionAsync(u => u.Following, subscription, subriber);
+
+            subscription.Photo = authorInfo.GetUserPhotoUrl(_imageRepository);
+
+            return subscription;
+        }
+
+        public async Task UnsubscribeAsync(string author, string subriber)
+        {
+            var authorInfo = await _userRepository.GetUserDetailsAsync(author);
+            var subriberInfo = await _userRepository.GetUserDetailsAsync(subriber);
+
+            await _userRepository.RemoveFromUserCollectionAsync(u => u.Followers, new UserFollowInfo
+            {
+                Username = subriberInfo.Username,
+                Photo = subriberInfo.Photo
+            }, author);
+
+            await _userRepository.RemoveFromUserCollectionAsync(u => u.Following, new UserFollowInfo
+            {
+                Username = authorInfo.Username,
+                Photo = authorInfo.Photo
+            }, subriber);
+        }
+
+        public void Notify(string author, string notification)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var authorInfo = await _userRepository.GetUserDetailsAsync(author);
+
+                    foreach (var follower in authorInfo.Followers)
+                    {
+                        await _userRepository.AddToUserCollectionAsync(u => u.Notifications, notification, follower.Username);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Failed to notify followers of {author}.", author);
+                }
+            });
+        }
+
+        public async Task RemoveNotificationAsync(string subriber, string notification)
+        {
+            await _userRepository.RemoveFromUserCollectionAsync(u => u.Notifications, notification, subriber);
+        }
+    }
 }

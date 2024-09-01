@@ -16,5 +16,10 @@ namespace BloggingSystemRepository
 		public HashSet<UserFollowInfo> Followers { get; set; } = new HashSet<UserFollowInfo>();
 		public HashSet<UserFollowInfo> Following { get; set; } = new HashSet<UserFollowInfo>();
 		public List<string> Notifications { get; set; } = new List<string>();
+
+		public string GetUserPhotoUrl(IImageRepository imageRepository)
+		{
+			return Photo is null ? "~/images/profile-icon.png" : imageRepository.GetImageUrl(Photo);
+		}
 	}
 }

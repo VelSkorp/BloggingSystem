@@ -30,6 +30,11 @@ header {
 	z-index: 1030;
 }
 
+footer {
+	background-color: white;
+	z-index: 1030;
+}
+
 .container .text {
 	font-size: 35px;
 	font-weight: 600;
@@ -84,6 +89,13 @@ form .btn {
 
 .profile-photo-container:hover .upload-overlay {
 	opacity: 1;
+}
+
+.subscription-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 10px;
 }
 
 .profile-icon {
@@ -181,4 +193,54 @@ form .btn {
 	padding: 0px;
 	margin: 2px;
 	width: 150px;
+}
+
+#sidebar {
+	width: 200px;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	background-color: #f8f9fa;
+	transition: 0.5s;
+}
+
+#sidebar.hidden {
+	width: 0;
+	padding-top: 0;
+}
+
+.toggle-btn {
+	position: fixed;
+	left: 210px;
+	cursor: pointer;
+	z-index: 1000;
+	transition: left 0.5s;
+}
+
+.toggle-btn.collapsed {
+	left: 10px;
+}
+
+#sidebar ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+#sidebar ul li {
+	padding: 10px;
+	text-align: center;
+}
+
+#sidebar ul li a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+#main-content {
+	padding-left: 200px;
+	transition: 0.5s;
+}
+
+#main-content.expanded {
+	padding-left: 0;
 }

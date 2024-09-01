@@ -7,32 +7,34 @@ using System.Security.Claims;
 namespace BloggingSystem
 {
 	[Authorize]
-	public class PostsController : Controller
+	public class PostsController : BaseController
 	{
 		private readonly ILogger<PostsController> _logger;
 		private readonly PostManager _postManager;
-		private readonly SubscribeManager _subscribeManager;
 
 		public PostsController(ILogger<PostsController> logger, SubscribeManager subscribeManager, PostManager postManager)
+			: base(subscribeManager)
 		{
 			_logger = logger;
 			_postManager = postManager;
-			_subscribeManager = subscribeManager;
 		}
 
 		public async Task<IActionResult> IndexAsync(string author)
 		{
+			await FillSubscriptionsAsync();
 			return View("Index", await _postManager.GetPostsAsync(author));
 		}
 
-		public IActionResult Create()
+		public async Task<IActionResult> CreateAsync()
 		{
-			return View();
+			await FillSubscriptionsAsync();
+			return View("Create");
 		}
 
-		public IActionResult Privacy()
+		public async Task<IActionResult> PrivacyAsync()
 		{
-			return View();
+			await FillSubscriptionsAsync();
+			return View("Privacy");
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

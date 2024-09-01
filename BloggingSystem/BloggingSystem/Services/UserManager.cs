@@ -18,13 +18,13 @@ namespace BloggingSystem
 		public async Task<(string username, string photoUrl)> AuthenticateUserAsync(LoginCredentials credentials)
 		{
 			var user = await _userRepository.AuthenticateUserAsync(credentials);
-			return (user.Username, user.Photo is null ? "~/images/profile-icon.png" : _imageRepository.GetImageUrl(user.Photo));
+			return (user.Username, user.GetUserPhotoUrl(_imageRepository));
 		}
 
 		public async Task<(string username, string photoUrl)> RegisterUserAsync(RegisterCredentials credentials)
 		{
 			var user = await _userRepository.RegisterUserAsync(credentials);
-			return (user.Username, user.Photo is null ? "~/images/profile-icon.png" : _imageRepository.GetImageUrl(user.Photo));
+			return (user.Username, user.GetUserPhotoUrl(_imageRepository));
 
 		}
 
@@ -55,11 +55,8 @@ namespace BloggingSystem
 			var posts = await _searchService.SearchPostsByAuthorAsync(author);
 			var user = await _userRepository.GetUserDetailsAsync(author);
 
-			if (user.Photo is not null)
-			{
-				user.Photo = _imageRepository.GetImageUrl(user.Photo);
-			}
-
+			user.Photo = user.GetUserPhotoUrl(_imageRepository);
+			
 			return new UserDetailsViewModel()
 			{
 				Posts = posts.FillPostsWithImageLinkAndSort(_imageRepository),

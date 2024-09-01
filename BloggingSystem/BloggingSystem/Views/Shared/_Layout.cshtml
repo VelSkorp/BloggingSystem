@@ -55,8 +55,12 @@
 					</div>
 				</nav>
 			</header>
+
+			<span class="toggle-btn" onclick="toggleSidebar()">&#x22D8;</span>
+			@await Html.PartialAsync("SidebarPartial", ViewBag.Subscriptions as IEnumerable<BloggingSystemRepository.UserFollowInfo>)
 		}
-		<div class="container">
+
+		<div id="main-content" class="container">
 			<main role="main" class="pb-3">
 				@RenderBody()
 			</main>
@@ -67,6 +71,7 @@
 				&copy; 2024 - BloggingSystem - <a asp-controller="Posts" asp-action="Privacy">Privacy</a>
 			</div>
 		</footer>
+
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>

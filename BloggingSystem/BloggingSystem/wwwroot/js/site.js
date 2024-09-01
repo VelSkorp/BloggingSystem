@@ -81,9 +81,10 @@
 			url: '/Posts/AddComment',
 			data: { postId: postId, commentContent: commentContent },
 			success: function (response) {
-				$('#commentsContainer-' + postId).append(`
+				$('#commentsContainer-' + postId)
+					.append(`
 						<li>${response.comment.content} (${response.comment.author} on ${new Date(response.comment.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})</li>
-					`);
+						`);
 				$('#commentContent-' + postId).val('');
 			},
 			error: function () {
@@ -109,6 +110,40 @@
 			}
 		});
 	});
+
+	$('#subscription-button').on('click', function (event) {
+		event.preventDefault();
+		var button = document.getElementById('subscription-button');
+		var author = document.getElementById('author').innerText.replace(/[()]/g, '');
+		var isSubscribed = button.innerText === 'Unsubscribe';
+
+		$.ajax({
+			type: 'POST',
+			url: '/Users/ToggleSubscription',
+			data: { isSubscribed: isSubscribed, author: author },
+			success: function (response) {
+				button.innerText = isSubscribed ? 'Subscribe' : 'Unsubscribe';
+				if (!isSubscribed) {
+					var photoUrl = response.subscription.Photo || '@Url.Content("~/images/profile-icon.png")';
+					$('#subscriptionContainer')
+						.append(`
+						<li id="subscription-${response.subscription.Username}" class="d-flex justify-content-center align-items-center">
+							<a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="${response.subscription.Username}">
+								<img src="${photoUrl}" class="subscription-icon" alt="subscription" />
+								${response.subscription.Username}
+							</a>
+						</li>
+						`);
+				}
+				else {
+					$('#subscription-' + author).remove();
+				}
+			},
+			error: function () {
+				alert('An error occurred while deleting the post.');
+			}
+		});
+	});
 });
 
 function editField(field) {
@@ -121,5 +156,22 @@ function editField(field) {
 		document.getElementById('editLastName').style.display = 'block';
 		document.getElementById('lastNameText').style.display = 'none';
 		document.getElementById('editLastName').value = document.getElementById('lastNameText').innerText;
+	}
+}
+
+function toggleSidebar() {
+	var sidebar = document.getElementById("sidebar");
+	var mainContent = document.getElementById("main-content");
+	var toggleBtn = document.querySelector(".toggle-btn");
+
+	sidebar.classList.toggle("hidden");
+	mainContent.classList.toggle("expanded");
+	toggleBtn.classList.toggle("collapsed");
+
+	if (sidebar.classList.contains("hidden")) {
+		toggleBtn.innerHTML = "&#x22D9;"; // Right arrow
+	}
+	else {
+		toggleBtn.innerHTML = "&#x22D8;"; // Left arrow
 	}
 }
