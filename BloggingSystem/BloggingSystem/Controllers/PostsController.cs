@@ -22,18 +22,21 @@ namespace BloggingSystem
 		public async Task<IActionResult> IndexAsync(string author)
 		{
 			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
 			return View("Index", await _postManager.GetPostsAsync(author));
 		}
 
 		public async Task<IActionResult> CreateAsync()
 		{
 			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
 			return View("Create");
 		}
 
 		public async Task<IActionResult> PrivacyAsync()
 		{
 			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
 			return View("Privacy");
 		}
 
@@ -86,6 +89,7 @@ namespace BloggingSystem
 			{
 				var author = User.FindFirst(ClaimTypes.Name)?.Value;
 				var newComment = await _postManager.AddCommentAsync(author, postId, commentContent);
+				_subscribeManager.Notify(author, $"{author} just commented \"{commentContent}\"");
 
 				if (newComment is null)
 				{

@@ -32,12 +32,13 @@
 							</ul>
 							<ul class="navbar-nav">
 								<li class="nav-item">
-								<div class="profile-icon-container">
+									<div class="d-flex align-items-center profile-icon-container">
+										@{
+											var username = User.FindFirstValue(ClaimTypes.Name);
+											var photoUrl = User.FindFirstValue(ClaimTypes.UserData);
+										}
+										@await Html.PartialAsync("NotificationsPartial", ViewBag.Notifications as IEnumerable<string>)
 										<div class="dropdown">
-											@{
-												var username = User.FindFirstValue(ClaimTypes.Name);
-												var photoUrl = User.FindFirstValue(ClaimTypes.UserData);
-											}
 											<div class="profile-icon">
 												<img src="@photoUrl" alt="User profile" />
 											</div>
@@ -48,7 +49,6 @@
 											</div>
 										</div>
 									</div>
-
 								</li>
 							</ul>
 						</div>

@@ -40,6 +40,27 @@ namespace BloggingSystem
 			return user.Following;
 		}
 
+		public async Task<List<string>> GetNotificationsAsync(string username)
+		{
+			var cacheKey = $"notifications_{username}";
+			var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData is not null)
+			{
+				return JsonConvert.DeserializeObject<List<string>>(cachedData);
+			}
+
+			var user = await _userRepository.GetUserDetailsAsync(username);
+
+			await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(user.Notifications),
+				new DistributedCacheEntryOptions
+				{
+					AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+				});
+
+			return user.Notifications;
+		}
+
 		public async Task<UserFollowInfo> SubscribeAsync(string author, string subriber)
 		{
 			var authorInfo = await _userRepository.GetUserDetailsAsync(author);
@@ -58,8 +79,8 @@ namespace BloggingSystem
 			};
 
 			await _userRepository.AddToUserCollectionAsync(u => u.Following, subscription, subriber);
-			await UpdateCacheForUserAsync(author);
-			await UpdateCacheForUserAsync(subriber);
+			await UpdateSubscriptionsCacheAsync(author);
+			await UpdateSubscriptionsCacheAsync(subriber);
 
 			subscription.Photo = authorInfo.GetUserPhotoUrl(_imageRepository);
 
@@ -83,8 +104,8 @@ namespace BloggingSystem
 				Photo = authorInfo.Photo
 			}, subriber);
 
-			await UpdateCacheForUserAsync(author);
-			await UpdateCacheForUserAsync(subriber);
+			await UpdateSubscriptionsCacheAsync(author);
+			await UpdateSubscriptionsCacheAsync(subriber);
 		}
 
 		public void Notify(string author, string notification)
@@ -98,6 +119,7 @@ namespace BloggingSystem
 					foreach (var follower in authorInfo.Followers)
 					{
 						await _userRepository.AddToUserCollectionAsync(u => u.Notifications, notification, follower.Username);
+						await UpdateNotificationsCacheAsync(follower.Username);
 					}
 				}
 				catch (Exception ex)
@@ -110,17 +132,27 @@ namespace BloggingSystem
 		public async Task RemoveNotificationAsync(string subriber, string notification)
 		{
 			await _userRepository.RemoveFromUserCollectionAsync(u => u.Notifications, notification, subriber);
+			await UpdateNotificationsCacheAsync(subriber);
 		}
 
-		private async Task UpdateCacheForUserAsync(string username)
+		private async Task UpdateSubscriptionsCacheAsync(string username)
 		{
 			var cacheKey = $"subscriptions_{username}";
-
-			// Get the latest user details
 			var user = await _userRepository.GetUserDetailsAsync(username);
 
-			// Update the cache with the new subscription data
 			await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(user.Following.FillSubscriptionsWithImageLinks(_imageRepository)),
+				new DistributedCacheEntryOptions
+				{
+					AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+				});
+		}
+
+		private async Task UpdateNotificationsCacheAsync(string username)
+		{
+			var cacheKey = $"notifications_{username}";
+			var user = await _userRepository.GetUserDetailsAsync(username);
+
+			await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(user.Notifications),
 				new DistributedCacheEntryOptions
 				{
 					AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)

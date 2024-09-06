@@ -41,6 +41,7 @@ namespace BloggingSystem
 			}
 
 			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
 
 			return View("ProfileDetails", await _userManager.GetUserDetailsAsync(author));
 		}
@@ -94,7 +95,11 @@ namespace BloggingSystem
 		public async Task<IActionResult> RemoveNotificationAsync(string subscriber, string notification)
 		{
 			await _subscribeManager.RemoveNotificationAsync(subscriber, notification);
-			return Ok();
+
+			return Json(new
+			{
+				success = true
+			});
 		}
 	}
 }

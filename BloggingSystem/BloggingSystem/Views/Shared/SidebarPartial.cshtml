@@ -5,7 +5,7 @@
 	<ul id="subscriptionContainer">
 		@foreach (var subscription in Model)
 		{
-			<li id="subscription-@subscription.Username" class="d-flex justify-content-center align-items-center">
+			<li id="subscription-@subscription.Username" class="d-flex align-items-center">
 				<a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="@subscription.Username">
 					<img src="@(subscription.Photo is null ? "/images/profile-icon.png" : subscription.Photo)" class="subscription-icon" alt="subscription" />
 					@subscription.Username

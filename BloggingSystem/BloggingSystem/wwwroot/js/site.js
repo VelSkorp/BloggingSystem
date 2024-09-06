@@ -126,7 +126,7 @@
 				if (!isSubscribed) {
 					$('#subscriptionContainer')
 						.append(`
-						<li id="subscription-${response.subscription.username}" class="d-flex justify-content-center align-items-center">
+						<li id="subscription-${response.subscription.username}" class="d-flex align-items-center">
 							<a asp-controller="Users" asp-action="AuthorDetails" asp-route-author="${response.subscription.username}">
 								<img src="${response.subscription.photo}" class="subscription-icon" alt="subscription" />
 								${response.subscription.username}
@@ -140,6 +140,33 @@
 			},
 			error: function () {
 				alert('An error occurred while deleting the post.');
+			}
+		});
+	});
+
+	$('.remove-notification').on('click', function (event) {
+		event.preventDefault();
+
+		var subscriber = $(this).data('subscriber');
+		var notification = $(this).data('notification');
+		var $notificationItem = $(this);
+
+		$.ajax({
+			type: 'POST',
+			url: '/Users/RemoveNotification',
+			data: {
+				subscriber: subscriber,
+				notification: notification
+			},
+			success: function (response) {
+				if (response.success) {
+					$notificationItem.remove();
+				} else {
+					alert('Failed to remove notification.');
+				}
+			},
+			error: function () {
+				alert('An error occurred while trying to remove the notification.');
 			}
 		});
 	});

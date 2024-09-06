@@ -12,6 +12,12 @@ namespace BloggingSystem
 			_subscribeManager = subscribeManager;
 		}
 
+		public async Task FillNotificationsAsync()
+		{
+			var username = User.FindFirst(ClaimTypes.Name)?.Value;
+			ViewBag.Notifications = await _subscribeManager.GetNotificationsAsync(username);
+		}
+
 		public async Task FillSubscriptionsAsync()
 		{
 			var username = User.FindFirst(ClaimTypes.Name)?.Value;
