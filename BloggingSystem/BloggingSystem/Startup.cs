@@ -25,6 +25,9 @@ namespace BloggingSystem
 			services.AddCeph(Configuration);
 			services.AddRedis(Configuration);
 
+			services.AddSingleton<UserManager>();
+			services.AddSingleton<PostManager>();
+			services.AddSingleton<SubscribeManager>();
 			services.AddSingleton<IPostsRepository, PostsRepository>();
 			services.AddSingleton<IUserRepository, UserRepository>();
 			services.AddSingleton<ISearchService, SearchService>();

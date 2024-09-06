@@ -8,14 +8,12 @@ namespace BloggingSystem
 {
 	public class AuthController : Controller
 	{
-		private readonly IUserRepository _userRepository;
-		private readonly IImageRepository _imageRepository;
 		private readonly ILogger<AuthController> _logger;
+		private readonly UserManager _userManager;
 
-		public AuthController(IUserRepository userRepository, IImageRepository imageRepository, ILogger<AuthController> logger)
+		public AuthController(UserManager userManager, ILogger<AuthController> logger)
 		{
-			_userRepository = userRepository;
-			_imageRepository = imageRepository;
+			_userManager = userManager;
 			_logger = logger;
 		}
 
@@ -39,7 +37,7 @@ namespace BloggingSystem
 		{
 			try
 			{
-				var user = await _userRepository.AuthenticateUserAsync(credentials);
+				var user = await _userManager.AuthenticateUserAsync(credentials);
 				await SaveUserCookieAsync(user);
 				return RedirectToAction("Index", "Posts");
 			}
@@ -57,7 +55,7 @@ namespace BloggingSystem
 		{
 			try
 			{
-				var user = await _userRepository.RegisterUserAsync(credentials);
+				var user = await _userManager.RegisterUserAsync(credentials);
 				await SaveUserCookieAsync(user);
 				return RedirectToAction("Index", "Posts");
 			}
@@ -74,12 +72,12 @@ namespace BloggingSystem
 			return RedirectToAction("Login", "Auth");
 		}
 
-		private async Task SaveUserCookieAsync(User user)
+		private async Task SaveUserCookieAsync((string username, string photoUrl) user)
 		{
 			var claims = new List<Claim>
 			{
-				new Claim(ClaimTypes.Name, user.Username),
-				new Claim(ClaimTypes.UserData, user.Photo is null ? Url.Content("~/images/profile-icon.png") : _imageRepository.GetImageUrl(user.Photo)),
+				new Claim(ClaimTypes.Name, user.username),
+				new Claim(ClaimTypes.UserData, user.photoUrl)
 			};
 
 			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

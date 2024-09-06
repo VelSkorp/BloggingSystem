@@ -1,45 +1,43 @@
 using BloggingSystemRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using System.Diagnostics;
 using System.Security.Claims;
 
 namespace BloggingSystem
 {
 	[Authorize]
-	public class PostsController : Controller
+	public class PostsController : BaseController
 	{
 		private readonly ILogger<PostsController> _logger;
-		private readonly IPostsRepository _postsRepository;
-		private readonly IImageRepository _imageRepository;
-		private readonly ISearchService _searchService;
+		private readonly PostManager _postManager;
 
-		public PostsController(ILogger<PostsController> logger, IPostsRepository postsRepository, IImageRepository imageRepository, ISearchService searchService)
+		public PostsController(ILogger<PostsController> logger, SubscribeManager subscribeManager, PostManager postManager)
+			: base(subscribeManager)
 		{
 			_logger = logger;
-			_postsRepository = postsRepository;
-			_imageRepository = imageRepository;
-			_searchService = searchService;
+			_postManager = postManager;
 		}
 
 		public async Task<IActionResult> IndexAsync(string author)
 		{
-			var posts = string.IsNullOrEmpty(author)
-				? await _postsRepository.GetAllPostsAsync()
-				: await _searchService.SearchPostsByAuthorAsync(author);
-
-			return View("Index", posts.FillPostsWithImageLinkAndSort(_imageRepository));
+			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
+			return View("Index", await _postManager.GetPostsAsync(author));
 		}
 
-		public IActionResult Create()
+		public async Task<IActionResult> CreateAsync()
 		{
-			return View();
+			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
+			return View("Create");
 		}
 
-		public IActionResult Privacy()
+		public async Task<IActionResult> PrivacyAsync()
 		{
-			return View();
+			await FillSubscriptionsAsync();
+			await FillNotificationsAsync();
+			return View("Privacy");
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -53,20 +51,9 @@ namespace BloggingSystem
 		{
 			try
 			{
-				post.CreatedAt = DateTime.Now;
-				post.Id = ObjectId.GenerateNewId(post.CreatedAt);
-				post.Author = User.FindFirst(ClaimTypes.Name)?.Value;
-
-				if (images is not null && images.Count > 0)
-				{
-					foreach (var image in images)
-					{
-						var imageUrl = await _imageRepository.UploadImageAsync(image);
-						post.Images.Add(imageUrl);
-					}
-				}
-
-				await _postsRepository.CreateAsync(post);
+				var author = User.FindFirst(ClaimTypes.Name)?.Value;
+				await _postManager.CreateAsync(author, post, images);
+				_subscribeManager.Notify(author, $"{author} just posted \"{post.Title}\"");
 				return RedirectToAction("Index");
 			}
 			catch (Exception ex)
@@ -81,7 +68,7 @@ namespace BloggingSystem
 		{
 			try
 			{
-				await _postsRepository.RemoveAsync(ObjectId.Parse(postId));
+				await _postManager.DeleteAsync(postId);
 
 				return Json(new
 				{
@@ -100,23 +87,14 @@ namespace BloggingSystem
 		{
 			try
 			{
-				var post = await _postsRepository.GetPostByIdAsync(ObjectId.Parse(postId));
-				if (post is null)
+				var author = User.FindFirst(ClaimTypes.Name)?.Value;
+				var newComment = await _postManager.AddCommentAsync(author, postId, commentContent);
+				_subscribeManager.Notify(author, $"{author} just commented \"{commentContent}\"");
+
+				if (newComment is null)
 				{
-					return NotFound();
+					return NotFound("Post not found");
 				}
-
-				var newComment = new Comment
-				{
-					Id = ObjectId.GenerateNewId(DateTime.Now),
-					Author = User.FindFirst(ClaimTypes.Name)?.Value,
-					Content = commentContent,
-					CreatedAt = DateTime.Now,
-				};
-
-				post.Comments.Add(newComment);
-
-				await _postsRepository.UpdateAsync(post);
 
 				return Json(new
 				{

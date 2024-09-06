@@ -9,7 +9,7 @@
 	<div class="d-flex justify-content-center mb-3" style="text-align: center;">
 		<form id="updateUserForm" class="d-flex justify-content-center" method="post" enctype="multipart/form-data">
 			<div class="profile-photo-container">
-				<img src="@(Model.User.Photo is null ? Url.Content("~/images/profile-icon.png") : Model.User.Photo)" class="profile-photo" alt="Profile Image" />
+				<img src="@(Model.User.Photo)" class="profile-photo" alt="Profile Image" />
 				<div class="upload-overlay">
 					<input class="hidden" type="file" id="photoInput" name="photo" accept="image/*" />
 					<span class="camera-icon">&#128247;</span>
