@@ -16,6 +16,10 @@
 			contentType: false,
 			processData: false,
 			success: function (response) {
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
+				}
 				window.location.href = '/';
 			},
 			error: function (error) {
@@ -47,6 +51,10 @@
 			contentType: false,
 			processData: false,
 			success: function (response) {
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
+				}
 				// Update the displayed fields only if the response fields are not null
 				if (response.photo !== null) {
 					document.querySelector('.profile-photo').src = response.photo;
@@ -81,6 +89,10 @@
 			url: '/Posts/AddComment',
 			data: { postId: postId, commentContent: commentContent },
 			success: function (response) {
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
+				}
 				$('#commentsContainer-' + postId)
 					.append(`
 						<li>${response.comment.content} (${response.comment.author} on ${new Date(response.comment.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})</li>
@@ -103,6 +115,10 @@
 			url: '/Posts/Delete',
 			data: { postId: postId },
 			success: function (response) {
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
+				}
 				$('#post-' + postId).remove();
 			},
 			error: function () {
@@ -122,6 +138,10 @@
 			url: '/Users/ToggleSubscription',
 			data: { isSubscribed: isSubscribed, author: author },
 			success: function (response) {
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
+				}
 				button.innerText = isSubscribed ? 'Subscribe' : 'Unsubscribe';
 				if (!isSubscribed) {
 					$('#subscriptionContainer')
@@ -159,11 +179,11 @@
 				notification: notification
 			},
 			success: function (response) {
-				if (response.success) {
-					$notificationItem.remove();
-				} else {
-					alert('Failed to remove notification.');
+				if (!response.success) {
+					window.location.href = '/Posts/Error?message=' + response.message;
+					return;
 				}
+				$notificationItem.remove();
 			},
 			error: function () {
 				alert('An error occurred while trying to remove the notification.');

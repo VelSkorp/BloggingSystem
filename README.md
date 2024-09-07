@@ -4,16 +4,18 @@ The Blogging System is a modern web application for managing blog posts, built u
 
 ## Features
 
-- User Authentication & Authorization: Secure login and registration for users.
-- Create/Delete Blog Posts: Full CRUD (Create, Read, Update, Delete) functionality for blog posts.
-- View Blog Posts: Display all blog posts, with options to search by author.
-- View Author profile: Display all blog posts, with author info.
-- View User profile: Display all blog posts, with user info and CRUD operations on posts.
-- Commenting System: Users can leave comments on blog posts.
-- Search Functionality: Fast and efficient search capabilities for blog posts using Elasticsearch.
-- Analytics & Monitoring: Real-time monitoring and visualization of application data with Kibana.
-- Caching: Improved performance through Redis caching.
-- Media Storage: Scalable object storage for media files using Ceph S3.
+- **User Authentication**: Secure login and registration.
+- **CRUD for Blog Posts**: Create, update, delete, and view blog posts effortlessly.
+- **View Blog Posts**: Display all published blog posts in a clean and organized format, allowing users to browse through the articles effortlessly. A search option makes it easy to find content by author.
+- **View Author Profile**: Showcase all posts written by a specific author. The profile includes a list of the author's published content and their details.
+-  **User Profile Management**: Users can view and edit their own profiles, and manage their blog posts directly from their dashboard.
+- **Commenting System**: Engage with content through an integrated commenting system. Users can leave comments on individual blog posts to encourage discussions.
+- **Search by Author**: Powered by Elasticsearch, this functionality allows fast, efficient searches of blog posts based on the author. Users can find relevant content quickly and easily.
+- **Real-time Analytics**: Visualize and monitor data with Kibana.
+- **Caching with Redis**: Boost performance by using Redis to cache frequently accessed data. This significantly improves load times and scalability for high-traffic scenarios.
+- **Media Storage**: Upload images and files with scalable Ceph S3 storage.
+- **Subscription System**: Users can subscribe to their favorite authors to receive updates whenever new posts are published, ensuring they never miss out on content.
+- **Notification System**: A built-in notification system sends alerts to users for important updates like new blog posts, comments on their articles, or replies to their comments.
 
 ## Screenshots
 

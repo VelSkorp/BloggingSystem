@@ -41,9 +41,13 @@ namespace BloggingSystem
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
+		public IActionResult Error(string message)
 		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+			return View(new ErrorViewModel 
+			{ 
+				RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+				Message = message
+			});
 		}
 
 		[HttpPost]
@@ -54,12 +58,21 @@ namespace BloggingSystem
 				var author = User.FindFirst(ClaimTypes.Name)?.Value;
 				await _postManager.CreateAsync(author, post, images);
 				_subscribeManager.Notify(author, $"{author} just posted \"{post.Title}\"");
-				return RedirectToAction("Index");
+
+				return Json(new
+				{
+					success = true
+				});
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to create the post");
-				return RedirectToAction("Error", "Posts");
+				var message = "Failed to create the post";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
 			}
 		}
 
@@ -77,8 +90,13 @@ namespace BloggingSystem
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to delete the post");
-				return RedirectToAction("Error", "Posts");
+				var message = "Failed to delete the post";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
 			}
 		}
 
@@ -110,8 +128,13 @@ namespace BloggingSystem
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to add comment");
-				return RedirectToAction("Error", "Posts");
+				var message = "Failed to add comment";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
 			}
 		}
 	}

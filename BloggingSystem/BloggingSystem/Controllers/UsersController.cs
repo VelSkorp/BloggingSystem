@@ -29,6 +29,7 @@ namespace BloggingSystem
 
 			ViewBag.Subscriptions = subscriptions;
 			ViewBag.IsSubscribed = subscriptions.FirstOrDefault(sub => sub.Username.Equals(author)) is not null;
+			await FillNotificationsAsync();
 
 			return View("AuthorDetails", await _userManager.GetUserDetailsAsync(author));
 		}
@@ -64,42 +65,73 @@ namespace BloggingSystem
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to delete the post");
-				return RedirectToAction("Error", "Posts");
+				var message = "Failed to delete the post";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
 			}
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> ToggleSubscriptionAsync(bool isSubscribed, string author)
 		{
-			var subscriber = User.FindFirst(ClaimTypes.Name)?.Value;
-
-			if (isSubscribed)
+			try
 			{
-				await _subscribeManager.UnsubscribeAsync(author, subscriber);
+				var subscriber = User.FindFirst(ClaimTypes.Name)?.Value;
+
+				if (isSubscribed)
+				{
+					await _subscribeManager.UnsubscribeAsync(author, subscriber);
+
+					return Json(new
+					{
+						success = true
+					});
+				}
+
+				return Json(new
+				{
+					success = true,
+					subscription = await _subscribeManager.SubscribeAsync(author, subscriber)
+				});
+			}
+			catch (Exception ex)
+			{
+				var message = $"Failed to {(isSubscribed ? "unsubscribe from" : "subscribe to")} {author}";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> RemoveNotificationAsync(string subscriber, string notification)
+		{
+			try
+			{
+				await _subscribeManager.RemoveNotificationAsync(subscriber, notification);
 
 				return Json(new
 				{
 					success = true
 				});
 			}
-
-			return Json(new
+			catch (Exception ex)
 			{
-				success = true,
-				subscription = await _subscribeManager.SubscribeAsync(author, subscriber)
-			});
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> RemoveNotificationAsync(string subscriber, string notification)
-		{
-			await _subscribeManager.RemoveNotificationAsync(subscriber, notification);
-
-			return Json(new
-			{
-				success = true
-			});
+				var message = $"Failed to delete {notification} for {subscriber}";
+				_logger.LogError(ex, message);
+				return Json(new
+				{
+					success = false,
+					message
+				});
+			}
 		}
 	}
 }

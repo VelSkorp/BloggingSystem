@@ -41,12 +41,6 @@
     <Content Update="wwwroot\images\profile-icon.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\search-icon.png">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\images\send-icon.png">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
